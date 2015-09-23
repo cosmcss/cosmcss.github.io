@@ -1,0 +1,196 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="icon" href="/favicon.ico?v=1.0">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="/css/blog.css">
+	<link rel="stylesheet" href="/css/syntax.css">
+        <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
+
+	<title>Liferay: How to encrypt (hash) password | LukasGrygar.com</title>
+
+	<meta name="author" content="Lukas Grygar">
+	<link rel="canonical" href="http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/">
+	<meta name="description" content="In case you&#8217;re creating your own registration portlet for Liferay, you need (in case you care about security, and I do) to encrypt password submitted b...">
+
+	<meta name="keywords" content="liferay, liferay-portal" />
+
+	
+    </head>
+    <body>
+
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span></a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <header class="blog-header">
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
+          <p class="lead blog-description">Personal enterprise Java web development blog.
+</p>
+      </header>
+
+      <div class="row">
+
+	<main class="col-sm-9 blog-main">
+			
+	<article itemscope itemtype="http://schema.org/BlogPosting">
+	   <header>
+	    <h1>Liferay: How to encrypt (hash) password</h1>
+	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-09-21">September 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
+           </header>
+
+           
+		<p>In case you’re creating your own registration portlet for Liferay, you need (in case you care about security, and I do) to encrypt password submitted by user.
+You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this method you need to use PortalClassInvoker.</p>
+
+<p>First of all necessary imports:</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno">1</span> <span class="kn">import</span> <span class="nn">com.liferay.portal.kernel.util.ClassResolverUtil</span><span class="o">;</span>
+<span class="lineno">2</span> <span class="kn">import</span> <span class="nn">com.liferay.portal.kernel.util.MethodKey</span><span class="o">;</span>
+<span class="lineno">3</span> <span class="kn">import</span> <span class="nn">com.liferay.portal.kernel.util.PortalClassInvoker</span><span class="o">;</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="n">MethodKey</span> <span class="n">methodKey</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MethodKey</span><span class="o">(</span><span class="n">ClassResolverUtil</span><span class="o">.</span><span class="na">resolveByPortalClassLoader</span><span class="o">(</span><span class="s">&quot;com.liferay.portal.security.pwd.PasswordEncryptorUtil&quot;</span><span class="o">),</span> <span class="s">&quot;encrypt&quot;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="lineno"> 2</span> <span class="n">String</span> <span class="n">encryptedPassword</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="lineno"> 3</span> <span class="k">try</span> <span class="o">{</span>
+<span class="lineno"> 4</span> 	<span class="n">encryptedPassword</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">PortalClassInvoker</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="n">methodKey</span><span class="o">,</span> <span class="n">model</span><span class="o">.</span><span class="na">getPassword</span><span class="o">());</span>
+<span class="lineno"> 5</span> <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno"> 6</span> 	<span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&quot;process():: Unexpected exception &quot;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+<span class="lineno"> 7</span> 	<span class="k">return</span> <span class="nf">error</span><span class="o">();</span>
+<span class="lineno"> 8</span> <span class="o">}</span>
+<span class="lineno"> 9</span> 
+<span class="lineno">10</span> <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">encryptedPassword</span><span class="o">);</span>
+<span class="lineno">11</span> 
+<span class="lineno">12</span> <span class="n">String</span> <span class="n">remoteAddr</span> <span class="o">=</span> <span class="n">BeanUtil</span><span class="o">.</span><span class="na">getHttpServletRequest</span><span class="o">(</span><span class="n">requestContext</span><span class="o">).</span><span class="na">getRemoteAddr</span><span class="o">();</span>
+<span class="lineno">13</span> 
+<span class="lineno">14</span> <span class="c1">// Liferay stuff to make new user login works</span>
+<span class="lineno">15</span> <span class="n">user</span><span class="o">.</span><span class="na">setPasswordEncrypted</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="lineno">16</span> <span class="n">user</span><span class="o">.</span><span class="na">setPasswordModified</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="lineno">17</span> <span class="n">user</span><span class="o">.</span><span class="na">setPasswordModifiedDate</span><span class="o">(</span><span class="k">new</span> <span class="nf">Date</span><span class="o">());</span>
+<span class="lineno">18</span> <span class="n">user</span><span class="o">.</span><span class="na">setPasswordReset</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+<span class="lineno">19</span> <span class="n">user</span><span class="o">.</span><span class="na">setModifiedDate</span><span class="o">(</span><span class="k">new</span> <span class="nf">Date</span><span class="o">());</span>
+<span class="lineno">20</span> <span class="n">user</span><span class="o">.</span><span class="na">setDigest</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+<span class="lineno">21</span> <span class="n">user</span><span class="o">.</span><span class="na">setLoginDate</span><span class="o">(</span><span class="k">new</span> <span class="nf">Date</span><span class="o">());</span>
+<span class="lineno">22</span> <span class="n">user</span><span class="o">.</span><span class="na">setLoginIP</span><span class="o">(</span><span class="n">remoteAddr</span><span class="o">);</span>
+<span class="lineno">23</span> <span class="n">user</span><span class="o">.</span><span class="na">setLastLoginDate</span><span class="o">(</span><span class="k">new</span> <span class="nf">Date</span><span class="o">());</span>
+<span class="lineno">24</span> <span class="n">user</span><span class="o">.</span><span class="na">setLastLoginIP</span><span class="o">(</span><span class="n">remoteAddr</span><span class="o">);</span></code></pre></div>
+
+<p>requestContext is Spring Web Flow’s RequestContext instance and user is Liferay’s User model.</p>
+
+<p>Saved password hash could be found in table USER_ in column PASSWORD_.</p>
+
+<p>This code is tested with Liferay 6.2 CE GA3.</p>
+
+	    
+	</article> 
+
+
+	<hr />
+
+	<div><p>Tags:
+	
+	<a href="http://lukasgrygar.com/tag/liferay" class="label label-default glyphicon glyphicon-tag"> liferay</a>&nbsp;
+	
+	<a href="http://lukasgrygar.com/tag/liferay-portal" class="label label-default glyphicon glyphicon-tag"> liferay-portal</a>&nbsp;
+	
+	</p></div>
+
+	
+	<p>Previous post: <a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></p>
+	
+	
+	
+	<p>Next post: <a href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/">Spring Web Flow: Exception does not get logged while using 'transition on-exception'</a></p>
+	
+	
+	<p>Related posts:</p>
+	<ul>
+	
+	<li><a href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</a></li>
+	
+	<li><a href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/">Spring Web Flow: Exception does not get logged while using 'transition on-exception'</a></li>
+	
+	<li><a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></li>
+	
+	<li><a href="http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/">jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</a></li>
+	
+	</ul>
+
+
+
+	</main><!-- /.blog-main -->
+
+        <aside class="col-sm-2 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Personal enterprise Java web development blog.
+</p>
+          </div>
+
+
+	<!-- 
+	<div class="sidebar-module">
+            <h4>Categories</h4>
+            <ol class="list-unstyled">
+		  
+		  
+		     
+		      <li><a href="#javascript">javascript <span>(1)</span></a></li>
+		     
+		      <li><a href="#thymeleaf">thymeleaf <span>(1)</span></a></li>
+		     
+		      <li><a href="#liferay">liferay <span>(1)</span></a></li>
+		     
+		      <li><a href="#spring-web-flow">spring-web-flow <span>(1)</span></a></li>
+		     
+		      <li><a href="#spring-framework">spring-framework <span>(1)</span></a></li>
+		    
+		  
+		
+            </ol>
+          </div>
+	-->
+
+        </aside><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+    <!-- /container -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+
+        <script src="/js/vendor/bootstrap.min.js"></script>
+
+        <script src="/js/main.js"></script>
+
+
+	
+
+    </body>
+</html>

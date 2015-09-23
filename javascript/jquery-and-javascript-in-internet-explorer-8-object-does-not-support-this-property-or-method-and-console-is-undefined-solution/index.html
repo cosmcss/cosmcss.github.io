@@ -1,0 +1,235 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="icon" href="/favicon.ico?v=1.0">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="/css/blog.css">
+	<link rel="stylesheet" href="/css/syntax.css">
+        <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
+
+	<title>jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution] | LukasGrygar.com</title>
+
+	<meta name="author" content="Lukas Grygar">
+	<link rel="canonical" href="http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/">
+	<meta name="description" content="While using jQuery and JavaScript for developing web applications you could encounter some problems with Microsoft Internet Explorer 8 which doesn&#8217;t oc...">
+
+	<meta name="keywords" content="javascript, jquery, ie8, internet-explorer" />
+
+	
+    </head>
+    <body>
+
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span></a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <header class="blog-header">
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
+          <p class="lead blog-description">Personal enterprise Java web development blog.
+</p>
+      </header>
+
+      <div class="row">
+
+	<main class="col-sm-9 blog-main">
+			
+	<article itemscope itemtype="http://schema.org/BlogPosting">
+	   <header>
+	    <h1>jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</h1>
+	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-09-21">September 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
+           </header>
+
+           
+		<p>While using jQuery and JavaScript for developing web applications you could encounter some problems with Microsoft Internet Explorer 8 which doesn’t occur in other web browsers, or at least they don’t break your application like IE 8 does.</p>
+
+<p>First of all lets tweak Internet Explorer to display notification about every script error, otherwise and error could occur and you wouldn’t even notice that.</p>
+
+<p><img src="/2015-09-20-jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/ie9-javascript-error-settings.png" alt="Internet Explorer 9: displaying notification about every script error" /></p>
+
+<h2 id="object-does-not-support-this-property-or-method-error">‘Object does not support this property or method’ error</h2>
+
+<p>This error happens if you call event.preventDefault();</p>
+
+<p>Imagine you have link in your HTML code</p>
+
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">id=</span><span class="s">&quot;moreInfo&quot;</span><span class="nt">&gt;</span>Show<span class="nt">&lt;/a&gt;</span></code></pre></div>
+
+<p>and you want to prevent default link behaviour after clicking on that link, so you use event.preventDefault(); which I’ve used on line 3 in code bellow:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="lineno">1</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#moreInfo&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">2</span> 	<span class="nx">showHideDiv</span><span class="p">(</span><span class="s1">&#39;#moreInfo&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+<span class="lineno">3</span> 	<span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+<span class="lineno">4</span> <span class="p">});</span></code></pre></div>
+
+<p>but in Internet Explorer 8 you get ‘Object does not support this property or method’ error.</p>
+
+<p>You could fix it like this:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="lineno">1</span> <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">)</span> <span class="p">{</span> 
+<span class="lineno">2</span> 	<span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+<span class="lineno">3</span> <span class="p">}</span>
+<span class="lineno">4</span> <span class="k">else</span> <span class="p">{</span>
+<span class="lineno">5</span> 	<span class="nx">event</span><span class="p">.</span><span class="nx">returnValue</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="lineno">6</span> <span class="p">}</span></code></pre></div>
+
+<p>or even more elegant one line version while using ternary operator, which I’ve prefer:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="lineno">1</span> <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span> <span class="o">?</span> <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">()</span> <span class="o">:</span> <span class="nx">event</span><span class="p">.</span><span class="nx">returnValue</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></code></pre></div>
+
+<h2 id="console-is-undefined-error">‘console is undefined’ error</h2>
+
+<p>This is very dangerous error because it completely breaks JavaScript/jQuery on the whole page and without that error notification settings turned on you won’t even notice that.</p>
+
+<p>This error occurs when you want to use JavaScript logging and you don’t check if window.console is defined.</p>
+
+<p>So if you have in your JavaScript code like this:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Foo bar!&#39;</span><span class="p">);</span></code></pre></div>
+
+<p>you get an ‘console is undefined’ error.</p>
+
+<p>You could fix this by adding following check:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">console</span><span class="p">){</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Loren ipsum&#39;</span><span class="p">);</span> <span class="p">}</span></code></pre></div>
+
+<p>And last note, if you use Developer Tools in Internet Explorer (shortcut F12) and error won’t happen so you might shake your head off while looking what’s broken in your code.</p>
+
+<h2 id="is-undefined-error">‘is undefined’ error</h2>
+
+<p>Lets imagine that you have two JavaScript files linked (it could be inlined JavaScript blocks also) to one HTML file. First is linked to Template/Theme and second one to content and in that second file you want to check if object is defined in that first file.</p>
+
+<p>First block:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+<span class="lineno">2</span> <span class="nb">window</span><span class="p">.</span><span class="nx">ChatDef</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">ChatDef</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="lineno">3</span> <span class="nx">ChatDef</span><span class="p">.</span><span class="nx">user</span> <span class="o">=</span> <span class="nx">ChatDef</span><span class="p">.</span><span class="nx">user</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="lineno">4</span> <span class="nx">ChatDef</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">=</span> <span class="s1">&#39;John&#39;</span><span class="p">;</span>
+<span class="lineno">5</span> <span class="o">&lt;</span><span class="err">/script&gt;</span></code></pre></div>
+
+<p>Second block:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+<span class="lineno">2</span> <span class="c1">// Check if object ChatDef exists at code or file linked above this script</span>
+<span class="lineno">3</span> <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">ChatDef</span> <span class="o">===</span> <span class="s2">&quot;undefined&quot;</span><span class="p">))</span> <span class="p">{</span>
+<span class="lineno">4</span>     <span class="c1">// JavaScript operations with ChatDef goes here</span>
+<span class="lineno">5</span> <span class="p">}</span>
+<span class="lineno">6</span> <span class="o">&lt;</span><span class="err">/script&gt;</span></code></pre></div>
+
+<p>So with check on line 3 in code above you won’t get ‘ChatDef is undefined’ error.</p>
+
+	    
+	</article> 
+
+
+	<hr />
+
+	<div><p>Tags:
+	
+	<a href="http://lukasgrygar.com/tag/javascript" class="label label-default glyphicon glyphicon-tag"> javascript</a>&nbsp;
+	
+	<a href="http://lukasgrygar.com/tag/jquery" class="label label-default glyphicon glyphicon-tag"> jquery</a>&nbsp;
+	
+	<a href="http://lukasgrygar.com/tag/ie8" class="label label-default glyphicon glyphicon-tag"> ie8</a>&nbsp;
+	
+	<a href="http://lukasgrygar.com/tag/internet-explorer" class="label label-default glyphicon glyphicon-tag"> internet-explorer</a>&nbsp;
+	
+	</p></div>
+
+	
+	
+	
+	<p>Next post: <a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></p>
+	
+	
+	<p>Related posts:</p>
+	<ul>
+	
+	<li><a href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</a></li>
+	
+	<li><a href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/">Spring Web Flow: Exception does not get logged while using 'transition on-exception'</a></li>
+	
+	<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/">Liferay: How to encrypt (hash) password</a></li>
+	
+	<li><a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></li>
+	
+	</ul>
+
+
+
+	</main><!-- /.blog-main -->
+
+        <aside class="col-sm-2 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Personal enterprise Java web development blog.
+</p>
+          </div>
+
+
+	<!-- 
+	<div class="sidebar-module">
+            <h4>Categories</h4>
+            <ol class="list-unstyled">
+		  
+		  
+		     
+		      <li><a href="#javascript">javascript <span>(1)</span></a></li>
+		     
+		      <li><a href="#thymeleaf">thymeleaf <span>(1)</span></a></li>
+		     
+		      <li><a href="#liferay">liferay <span>(1)</span></a></li>
+		     
+		      <li><a href="#spring-web-flow">spring-web-flow <span>(1)</span></a></li>
+		     
+		      <li><a href="#spring-framework">spring-framework <span>(1)</span></a></li>
+		    
+		  
+		
+            </ol>
+          </div>
+	-->
+
+        </aside><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+    <!-- /container -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+
+        <script src="/js/vendor/bootstrap.min.js"></script>
+
+        <script src="/js/main.js"></script>
+
+
+	
+
+    </body>
+</html>
