@@ -9,20 +9,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="icon" href="/favicon.ico?v=1.0">
 
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="/css/blog.css">
+	<link rel="stylesheet" href="/css/syntax.css">
         <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
 
 	<title>Thymeleaf: Tips and Tricks | LukasGrygar.com</title>
 
 	<meta name="author" content="Lukas Grygar">
-	<!-- <link rel="canonical" href="" /> -->
-	<meta name="description" content="I would like to show you some useful Thymeleaf code snippets to which I came across during my front-end development with this awesome Java template system.
+	<link rel="canonical" href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">
+	<meta name="description" content="I would like to show you some useful Thymeleaf code snippets to which I came across during my front-end development with this awesome Java template system.">
 
-" />
-	<meta name="keywords" content="thymeleaf ,java ," />
+	<meta name="keywords" content="thymeleaf, java" />
+
+	
     </head>
     <body>
 
@@ -30,7 +35,7 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item" href="http://lukasgrygar.com">Home</a>
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span></a>
         </nav>
       </div>
     </div>
@@ -38,7 +43,7 @@
     <div class="container">
 
       <header class="blog-header">
-          <span class="blog-title"><a href="http://lukasgrygar.com">LukasGrygar.com</a></span>
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
           <p class="lead blog-description">Personal enterprise Java web development blog.
 </p>
       </header>
@@ -46,15 +51,15 @@
       <div class="row">
 
 	<main class="col-sm-9 blog-main">
-		<div class="blog-post">
-
-	<article>
-	  <header>	
-	    <h1 class="blog-post-title">Thymeleaf: Tips and Tricks</h1>
-	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time>Sep 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
+			
+	<article itemscope itemtype="http://schema.org/BlogPosting">
+	   <header>
+	    <h1>Thymeleaf: Tips and Tricks</h1>
+	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-09-21">September 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
            </header>
 
-           <p>I would like to show you some useful Thymeleaf code snippets to which I came across during my front-end development with this awesome Java template system.</p>
+           
+		<p>I would like to show you some useful Thymeleaf code snippets to which I came across during my front-end development with this awesome Java template system.</p>
 
 <p>Code snippets bellow are tested in Thymeleaf 2.1.3.RELEASE.</p>
 
@@ -234,7 +239,9 @@
 
 <p>If you would like to use feature like autocompletition it’s worth to check <a href="https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin">Thymeleaf extras Eclipse plugin</a>.</p>
 
+	    
 	</article> 
+
 
 	<hr />
 
@@ -267,7 +274,7 @@
 	
 	</ul>
 
-</div><!-- /.blog-post -->
+
 
 	</main><!-- /.blog-main -->
 

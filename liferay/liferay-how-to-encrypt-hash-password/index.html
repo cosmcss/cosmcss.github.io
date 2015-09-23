@@ -9,21 +9,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="icon" href="/favicon.ico?v=1.0">
 
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="/css/blog.css">
+	<link rel="stylesheet" href="/css/syntax.css">
         <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
 
 	<title>Liferay: How to encrypt (hash) password | LukasGrygar.com</title>
 
 	<meta name="author" content="Lukas Grygar">
-	<!-- <link rel="canonical" href="" /> -->
-	<meta name="description" content="In case you&#8217;re creating your own registration portlet for Liferay, you need (in case you care about security, and I do) to encrypt password submitted by user.
-You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this method you need to use PortalClassInvoker.
+	<link rel="canonical" href="http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/">
+	<meta name="description" content="In case you&#8217;re creating your own registration portlet for Liferay, you need (in case you care about security, and I do) to encrypt password submitted b...">
 
-" />
-	<meta name="keywords" content="liferay ,liferay-portal ," />
+	<meta name="keywords" content="liferay, liferay-portal" />
+
+	
     </head>
     <body>
 
@@ -31,7 +35,7 @@ You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item" href="http://lukasgrygar.com">Home</a>
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span></a>
         </nav>
       </div>
     </div>
@@ -39,7 +43,7 @@ You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this
     <div class="container">
 
       <header class="blog-header">
-          <span class="blog-title"><a href="http://lukasgrygar.com">LukasGrygar.com</a></span>
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
           <p class="lead blog-description">Personal enterprise Java web development blog.
 </p>
       </header>
@@ -47,15 +51,15 @@ You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this
       <div class="row">
 
 	<main class="col-sm-9 blog-main">
-		<div class="blog-post">
-
-	<article>
-	  <header>	
-	    <h1 class="blog-post-title">Liferay: How to encrypt (hash) password</h1>
-	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time>Sep 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
+			
+	<article itemscope itemtype="http://schema.org/BlogPosting">
+	   <header>
+	    <h1>Liferay: How to encrypt (hash) password</h1>
+	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-09-21">September 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
            </header>
 
-           <p>In case you’re creating your own registration portlet for Liferay, you need (in case you care about security, and I do) to encrypt password submitted by user.
+           
+		<p>In case you’re creating your own registration portlet for Liferay, you need (in case you care about security, and I do) to encrypt password submitted by user.
 You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this method you need to use PortalClassInvoker.</p>
 
 <p>First of all necessary imports:</p>
@@ -95,7 +99,9 @@ You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this
 
 <p>This code is tested with Liferay 6.2 CE GA3.</p>
 
+	    
 	</article> 
+
 
 	<hr />
 
@@ -128,7 +134,7 @@ You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this
 	
 	</ul>
 
-</div><!-- /.blog-post -->
+
 
 	</main><!-- /.blog-main -->
 

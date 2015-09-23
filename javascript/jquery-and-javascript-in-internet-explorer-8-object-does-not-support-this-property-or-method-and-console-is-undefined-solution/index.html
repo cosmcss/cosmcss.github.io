@@ -9,20 +9,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="icon" href="/favicon.ico?v=1.0">
 
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="/css/blog.css">
+	<link rel="stylesheet" href="/css/syntax.css">
         <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
 
 	<title>jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution] | LukasGrygar.com</title>
 
 	<meta name="author" content="Lukas Grygar">
-	<!-- <link rel="canonical" href="" /> -->
-	<meta name="description" content="While using jQuery and JavaScript for developing web applications you could encounter some problems with Microsoft Internet Explorer 8 which doesn&#8217;t occur in other web browsers, or at least they don&#8217;t break your application like IE 8 does.
+	<link rel="canonical" href="http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/">
+	<meta name="description" content="While using jQuery and JavaScript for developing web applications you could encounter some problems with Microsoft Internet Explorer 8 which doesn&#8217;t oc...">
 
-" />
-	<meta name="keywords" content="javascript ,jquery ,ie8 ,internet-explorer ," />
+	<meta name="keywords" content="javascript, jquery, ie8, internet-explorer" />
+
+	
     </head>
     <body>
 
@@ -30,7 +35,7 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item" href="http://lukasgrygar.com">Home</a>
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span></a>
         </nav>
       </div>
     </div>
@@ -38,7 +43,7 @@
     <div class="container">
 
       <header class="blog-header">
-          <span class="blog-title"><a href="http://lukasgrygar.com">LukasGrygar.com</a></span>
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
           <p class="lead blog-description">Personal enterprise Java web development blog.
 </p>
       </header>
@@ -46,15 +51,15 @@
       <div class="row">
 
 	<main class="col-sm-9 blog-main">
-		<div class="blog-post">
-
-	<article>
-	  <header>	
-	    <h1 class="blog-post-title">jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</h1>
-	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time>Sep 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
+			
+	<article itemscope itemtype="http://schema.org/BlogPosting">
+	   <header>
+	    <h1>jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</h1>
+	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-09-21">September 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
            </header>
 
-           <p>While using jQuery and JavaScript for developing web applications you could encounter some problems with Microsoft Internet Explorer 8 which doesn’t occur in other web browsers, or at least they don’t break your application like IE 8 does.</p>
+           
+		<p>While using jQuery and JavaScript for developing web applications you could encounter some problems with Microsoft Internet Explorer 8 which doesn’t occur in other web browsers, or at least they don’t break your application like IE 8 does.</p>
 
 <p>First of all lets tweak Internet Explorer to display notification about every script error, otherwise and error could occur and you wouldn’t even notice that.</p>
 
@@ -131,7 +136,9 @@
 
 <p>So with check on line 3 in code above you won’t get ‘ChatDef is undefined’ error.</p>
 
+	    
 	</article> 
+
 
 	<hr />
 
@@ -166,7 +173,7 @@
 	
 	</ul>
 
-</div><!-- /.blog-post -->
+
 
 	</main><!-- /.blog-main -->
 

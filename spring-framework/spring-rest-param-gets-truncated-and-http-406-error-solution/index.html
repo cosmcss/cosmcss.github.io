@@ -9,20 +9,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="icon" href="/favicon.ico?v=1.0">
 
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="/css/blog.css">
+	<link rel="stylesheet" href="/css/syntax.css">
         <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
 
 	<title>Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution | LukasGrygar.com</title>
 
 	<meta name="author" content="Lukas Grygar">
-	<!-- <link rel="canonical" href="" /> -->
-	<meta name="description" content="Imagine you have following Spring REST controler (please note that I use Spring 4, so I don&#8217;t need to use @ResponseBody annotation anymore) which gets an email address and return JSON response:
+	<link rel="canonical" href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">
+	<meta name="description" content="Imagine you have following Spring REST controler (please note that I use Spring 4, so I don&#8217;t need to use @ResponseBody annotation anymore) which gets ...">
 
-" />
-	<meta name="keywords" content="java ,spring-framework ,spring ,rest ,api ,json ," />
+	<meta name="keywords" content="java, spring-framework, spring, rest, api, json" />
+
+	
     </head>
     <body>
 
@@ -30,7 +35,7 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item" href="http://lukasgrygar.com">Home</a>
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span></a>
         </nav>
       </div>
     </div>
@@ -38,7 +43,7 @@
     <div class="container">
 
       <header class="blog-header">
-          <span class="blog-title"><a href="http://lukasgrygar.com">LukasGrygar.com</a></span>
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
           <p class="lead blog-description">Personal enterprise Java web development blog.
 </p>
       </header>
@@ -46,15 +51,15 @@
       <div class="row">
 
 	<main class="col-sm-9 blog-main">
-		<div class="blog-post">
-
-	<article>
-	  <header>	
-	    <h1 class="blog-post-title">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</h1>
-	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time>Sep 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
+			
+	<article itemscope itemtype="http://schema.org/BlogPosting">
+	   <header>
+	    <h1>Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</h1>
+	    <p class="blog-post-meta"><span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-09-21">September 21, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar</p>
            </header>
 
-           <p>Imagine you have following Spring REST controler (please note that I use Spring 4, so I don’t need to use @ResponseBody annotation anymore) which gets an email address and return JSON response:</p>
+           
+		<p>Imagine you have following Spring REST controler (please note that I use Spring 4, so I don’t need to use @ResponseBody annotation anymore) which gets an email address and return JSON response:</p>
 
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="nd">@RestController</span>
 <span class="lineno"> 2</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">EmailCheckInfoController</span> <span class="o">{</span>
@@ -145,7 +150,9 @@ The resource identified by this request is only capable of generating responses 
   <li><a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-config-path-matching">http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-config-path-matching</a></li>
 </ul>
 
+	    
 	</article> 
+
 
 	<hr />
 
@@ -184,7 +191,7 @@ The resource identified by this request is only capable of generating responses 
 	
 	</ul>
 
-</div><!-- /.blog-post -->
+
 
 	</main><!-- /.blog-main -->
 
