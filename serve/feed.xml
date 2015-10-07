@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>LukasGrygar.com</title>
+    <description>Personal enterprise Java web development blog.
+</description>
+    <link>http://lukasgrygar.com/</link>
+    <atom:link href="http://lukasgrygar.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>2015-10-07 22:53:07 +0200</pubDate>
+    <lastBuildDate>2015-10-07 22:53:07 +0200</lastBuildDate>
+    <generator>Jekyll v</generator>
+    
+      <item>
+        <title>Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</title>
+        <description>&lt;p&gt;Imagine you have following Spring REST controler (please note that I use Spring 4, so I don’t need to use @ResponseBody annotation anymore) which gets an email address and return JSON response:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@RestController
+public class EmailCheckInfoController {
+
+    private static final Logger log = Logger.getLogger(EmailCheckInfoController.class);
+
+    @RequestMapping(value = &amp;quot;/{userEmail}&amp;quot;, method = RequestMethod.GET, produces = &amp;quot;application/json&amp;quot;)
+    public EmailCheckInfoResponse responseEmailCheckInfo(@PathVariable(&amp;quot;userEmail&amp;quot;) String userEmail) {
+        if (log.isDebugEnabled()) {
+            log.debug(&amp;quot;responseEmailCheckInfo():: Entry&amp;quot;);
+        }
+
+        EmailCheckInfoResponse resp = new EmailCheckInfoResponse();
+		
+		// rest of code ommited
+	
+        return resp;
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;you could encounter two problems (after fixing first one then the second one comes out).&lt;/p&gt;
+
+&lt;h2 id=&quot;gets-truncated-todo&quot;&gt;Gets truncated TODO&lt;/h2&gt;
+
+&lt;p&gt;Path variable userEmail eg. ‘johndoe@domain.com’ gets truncated to just ‘johndoe@domain’. Solution is easy just add:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;java&quot;&gt;.+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;to request value, so request mapping would be the following:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@RequestMapping(value = &amp;quot;/{userEmail:.+}&amp;quot;, method = RequestMethod.GET, produces = &amp;quot;application/json&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;http-status-406-not-acceptable-error&quot;&gt;‘HTTP Status 406 Not acceptable’ error&lt;/h2&gt;
+
+&lt;p&gt;After fixing that suffix truncation you may get and HTTP 406 error. I’m using Tomcat 7 and I get following error description:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;HTTP Status 406&lt;/em&gt;
+The resource identified by this request is only capable of generating responses with characteristics not acceptable according to the request “accept” headers.&lt;/p&gt;
+
+&lt;p&gt;The problem is caused due to Spring Framework’s ContentNegotiationManager settings.&lt;/p&gt;
+
+&lt;p&gt;My servlet settings are in file called emailcheck-servlet.xml where you could find Spring configuration for this servlet.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot;?&amp;gt;
+&amp;lt;beans xmlns=&amp;quot;http://www.springframework.org/schema/beans&amp;quot;
+	xmlns:context=&amp;quot;http://www.springframework.org/schema/context&amp;quot;
+	xmlns:mvc=&amp;quot;http://www.springframework.org/schema/mvc&amp;quot; xmlns:xsi=&amp;quot;http://www.w3.org/2001/XMLSchema-instance&amp;quot;
+	xsi:schemaLocation=&amp;quot;
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd&amp;quot;&amp;gt;
+
+	&amp;lt;context:component-scan base-package=&amp;quot;com.lukasgrygar.testapp.service&amp;quot; /&amp;gt;
+	
+	&amp;lt;mvc:annotation-driven /&amp;gt;
+
+&amp;lt;/beans&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So to configure ContentNegotiationManager to favor parameter over path extension I did following (look at lines 12-15 and 17): &lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot;?&amp;gt;
+&amp;lt;beans xmlns=&amp;quot;http://www.springframework.org/schema/beans&amp;quot;
+	xmlns:context=&amp;quot;http://www.springframework.org/schema/context&amp;quot;
+	xmlns:mvc=&amp;quot;http://www.springframework.org/schema/mvc&amp;quot; xmlns:xsi=&amp;quot;http://www.w3.org/2001/XMLSchema-instance&amp;quot;
+	xsi:schemaLocation=&amp;quot;
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd&amp;quot;&amp;gt;
+
+	&amp;lt;context:component-scan base-package=&amp;quot;com.lukasgrygar.testapp.service&amp;quot; /&amp;gt;
+	
+	&amp;lt;bean id=&amp;quot;contentNegotiationManager&amp;quot; class=&amp;quot;org.springframework.web.accept.ContentNegotiationManagerFactoryBean&amp;quot;&amp;gt;
+		&amp;lt;property name=&amp;quot;favorPathExtension&amp;quot; value=&amp;quot;false&amp;quot; /&amp;gt;
+		&amp;lt;property name=&amp;quot;favorParameter&amp;quot; value=&amp;quot;true&amp;quot; /&amp;gt;
+	&amp;lt;/bean&amp;gt;
+	
+	&amp;lt;mvc:annotation-driven content-negotiation-manager=&amp;quot;contentNegotiationManager&amp;quot; /&amp;gt;
+
+&amp;lt;/beans&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And that’s it Spring Rest service which takes email and produces JSON response works!&lt;/p&gt;
+
+&lt;p&gt;References:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping&quot;&gt;http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-config-content-negotiation&quot;&gt;http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-config-content-negotiation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-config-path-matching&quot;&gt;http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-config-path-matching&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>2015-09-21 22:15:00 +0200</pubDate>
+        <link>http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/</link>
+        <guid isPermaLink="true">http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/</guid>
+        
+        <category>java</category>
+        
+        <category>spring-framework</category>
+        
+        <category>spring</category>
+        
+        <category>rest</category>
+        
+        <category>api</category>
+        
+        <category>json</category>
+        
+        
+        <category>spring-framework</category>
+        
+      </item>
+    
+      <item>
+        <title>Spring Web Flow: Exception does not get logged while using 'transition on-exception'</title>
+        <description>&lt;p&gt;While using Spring Web Flow you may encounter problem that exception which gets caught at ‘transition on-exception’ doesn’t get logged.&lt;/p&gt;
+
+&lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
+
+&lt;p&gt;Try to put following code into your handler method:&lt;/p&gt;
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;java&quot;&gt;throw new RuntimeException();&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and with following configuration in your *-flow.xml&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;view-state id=&amp;quot;errorView&amp;quot; view=&amp;quot;error/generalError&amp;quot; /&amp;gt;
+
+&amp;lt;global-transitions&amp;gt;
+    &amp;lt;transition on-exception=&amp;quot;java.lang.Exception&amp;quot; to=&amp;quot;errorView&amp;quot; /&amp;gt;
+&amp;lt;/global-transitions&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;exception won’t get logged.&lt;/p&gt;
+
+&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
+
+&lt;p&gt;You could fix it with following logFlowException method bellow:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;java&quot;&gt;package com.lukasgrygar.testapp.util;
+
+import org.apache.log4j.Logger;
+
+public class Util {
+
+    private static Logger log = Logger.getLogger(Util.class);
+
+   /**
+     * Used to log exceptions handled by global transitions on-exception handler.
+     * These exceptions aren't propagated either to FlowHandlerAdapter.handleException nor to AbstractFlowHandler.handleException.
+     * 
+     * @param rootCauseException
+     * @param stateException
+     */
+    public void logFlowException(Exception rootCauseException, Exception stateException) {
+       if (rootCauseException != null) {
+            log.error(&amp;quot;logFlowException(): Unexpected flow exception.&amp;quot;, rootCauseException);
+        } else if (stateException != null) {
+            log.error(&amp;quot;logFlowException(): Unexpected flow exception.&amp;quot;, stateException);
+        } else {
+            log.error(&amp;quot;logFlowException(): Unexpected flow exception, but exception detail is missing. This shouldn't happen.&amp;quot;);
+        }
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And then you need to modify your *-flow.xml configuration file, to evaluate logFlowException method everytime an Exception occurs:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;view-state id=&amp;quot;errorView&amp;quot; view=&amp;quot;error/generalError&amp;quot; /&amp;gt;
+
+&amp;lt;global-transitions&amp;gt;
+    &amp;lt;transition on-exception=&amp;quot;java.lang.Exception&amp;quot; to=&amp;quot;errorView&amp;quot;&amp;gt;
+        &amp;lt;evaluate expression=&amp;quot;util.logFlowException(flashScope.rootCauseException, flashScope.stateException)&amp;quot; /&amp;gt;
+    &amp;lt;/transition&amp;gt;
+&amp;lt;/global-transitions&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and don’t forget to add bean configuration to your context configuration file:&lt;/p&gt;
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;bean id=&amp;quot;util&amp;quot; class=&amp;quot;com.lukasgrygar.testapp.util.Util&amp;quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I’m using Spring Web Flow version 2.3.3.RELEASE.&lt;/p&gt;
+
+&lt;p&gt;I would like to give a credit to my senior colleague for this solution.&lt;/p&gt;
+</description>
+        <pubDate>2015-09-21 22:00:00 +0200</pubDate>
+        <link>http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/</link>
+        <guid isPermaLink="true">http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/</guid>
+        
+        <category>java</category>
+        
+        <category>spring</category>
+        
+        <category>spring-web-flow</category>
+        
+        <category>spring-webflow</category>
+        
+        
+        <category>spring-web-flow</category>
+        
+      </item>
+    
+      <item>
+        <title>Liferay: How to encrypt (hash) password</title>
+        <description>&lt;p&gt;In case you’re creating your own registration portlet for Liferay, you need (in case you care about security, and I do) to encrypt password submitted by user.
+You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this method you need to use PortalClassInvoker.&lt;/p&gt;
+
+&lt;p&gt;First of all necessary imports:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;java&quot;&gt;import com.liferay.portal.kernel.util.ClassResolverUtil;
+import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.kernel.util.PortalClassInvoker;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;java&quot;&gt;MethodKey methodKey = new MethodKey(ClassResolverUtil.resolveByPortalClassLoader(&amp;quot;com.liferay.portal.security.pwd.PasswordEncryptorUtil&amp;quot;), &amp;quot;encrypt&amp;quot;, String.class);
+String encryptedPassword = null;
+try {
+	encryptedPassword = (String) PortalClassInvoker.invoke(false, methodKey, model.getPassword());
+} catch (Exception e) {
+	log.error(&amp;quot;process():: Unexpected exception &amp;quot;, e);
+	return error();
+}
+
+user.setPassword(encryptedPassword);
+
+String remoteAddr = BeanUtil.getHttpServletRequest(requestContext).getRemoteAddr();
+
+// Liferay stuff to make new user login works
+user.setPasswordEncrypted(true);
+user.setPasswordModified(true);
+user.setPasswordModifiedDate(new Date());
+user.setPasswordReset(false);
+user.setModifiedDate(new Date());
+user.setDigest(null);
+user.setLoginDate(new Date());
+user.setLoginIP(remoteAddr);
+user.setLastLoginDate(new Date());
+user.setLastLoginIP(remoteAddr);&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;requestContext is Spring Web Flow’s RequestContext instance and user is Liferay’s User model.&lt;/p&gt;
+
+&lt;p&gt;Saved password hash could be found in table USER_ in column PASSWORD_.&lt;/p&gt;
+
+&lt;p&gt;This code is tested with Liferay 6.2 CE GA3.&lt;/p&gt;
+</description>
+        <pubDate>2015-09-21 21:30:00 +0200</pubDate>
+        <link>http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/</link>
+        <guid isPermaLink="true">http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/</guid>
+        
+        <category>liferay</category>
+        
+        <category>liferay-portal</category>
+        
+        
+        <category>liferay</category>
+        
+      </item>
+    
+      <item>
+        <title>Thymeleaf: Tips and Tricks</title>
+        <description>&lt;p&gt;I would like to show you some useful Thymeleaf code snippets to which I came across during my front-end development with this awesome Java template system.&lt;/p&gt;
+
+&lt;p&gt;Code snippets bellow are tested in Thymeleaf 2.1.3.RELEASE. &lt;/p&gt;
+
+&lt;h2 id=&quot;conditional-display-of-element-only-in-case-if-translation-exists&quot;&gt;Conditional display of element only in case if translation exists&lt;/h2&gt;
+
+&lt;p&gt;In case that translation string doesn’t exist in your messages.properties file you could do the following:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;p th:if=&amp;quot;${#messages.msgOrNull('not.so.important.message')}&amp;quot; th:text=&amp;quot;#{not.so.important.message}&amp;quot;&amp;gt;&amp;lt;/p&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;use-thblock-instead-of-thremovetag-its-more-elegant&quot;&gt;Use th:block instead of th:remove=”tag” it’s more elegant&lt;/h2&gt;
+
+&lt;p&gt;Instead of:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;div th:text=&amp;quot;${someVariable}&amp;quot; th:remove=&amp;quot;tag&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;you should use (&lt;a href=&quot;http://www.thymeleaf.org/whatsnew21.html#bloc&quot;&gt;since Thymeleaf 2.1&lt;/a&gt;):&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;th:block th:text=&amp;quot;${someVariable}&amp;quot;&amp;gt;&amp;lt;/th:block&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;or even more elegant un-pair:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;th:block th:text=&amp;quot;${someVariable}&amp;quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;take-care-when-using-thwith&quot;&gt;Take care when using th:with&lt;/h2&gt;
+
+&lt;p&gt;With th:with you could define a variable in Thymeleaf but take care that this variable is not available in element in which is declared.&lt;/p&gt;
+
+&lt;p&gt;So this code won’t work:&lt;/p&gt;
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;div th:with=&amp;quot;isSomeVariable=${someVariable}&amp;quot; th:if=&amp;quot;${isSomeVariable} == true&amp;quot;&amp;gt;It's true!&amp;lt;/div&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You should use th:with like this:&lt;/p&gt;
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;th:block th:with=&amp;quot;isSomeVariable=${someVariable}&amp;quot;&amp;gt;
+	&amp;lt;div th:if=&amp;quot;${isSomeVariable} == true&amp;quot;&amp;gt;
+	It's true!
+	&amp;lt;/div&amp;gt;
+&amp;lt;/th:block&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;instead-of-input-name-id-and-thvalue-use-thfield-it-behaves-intelligently-and-its-dry&quot;&gt;Instead of input name, id and th:value use th:field it behaves intelligently and it’s DRY&lt;/h2&gt;
+
+&lt;p&gt;th:field behaves differently according to tag:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;input&lt;/li&gt;
+  &lt;li&gt;select&lt;/li&gt;
+  &lt;li&gt;textarea&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;and also according to type:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;text &lt;/li&gt;
+  &lt;li&gt;password &lt;/li&gt;
+  &lt;li&gt;radio&lt;/li&gt;
+  &lt;li&gt;checkbox&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So following code:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;input type=&amp;quot;text&amp;quot; th:field=&amp;quot;*{userName}&amp;quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;is equivalent to:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;input type=&amp;quot;text&amp;quot; id=&amp;quot;userName&amp;quot; name=&amp;quot;userName&amp;quot; th:value=&amp;quot;*{userName}&amp;quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;access-to-static-class&quot;&gt;Access to static class&lt;/h2&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;p th:text=&amp;quot;${T(com.example.util).formatPhoneNumber(phoneNumber)}&amp;quot; /&amp;gt;&amp;lt;/p&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;access-to-bean&quot;&gt;Access to bean&lt;/h2&gt;
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;p th:text=&amp;quot;${@exampleService.getFoo()}&amp;quot;&amp;gt;&amp;lt;/p&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;html-conditional-comments&quot;&gt;HTML conditional comments&lt;/h2&gt;
+
+&lt;p&gt;If you want to use HTML conditional comments, which is useful for example for linking some special CSS styles for each Internet Explorer version and you want Thymeleaf to process these pieces, then you need to use &lt;a href=&quot;https://github.com/thymeleaf/thymeleaf-extras-conditionalcomments&quot;&gt;thymeleaf-extras-conditionalcomments&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I’ve added this configuration to my *-portlet.xml file:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;property name=&amp;quot;additionalDialects&amp;quot;&amp;gt;
+    &amp;lt;set&amp;gt;
+        &amp;lt;bean class=&amp;quot;org.thymeleaf.extras.conditionalcomments.dialect.ConditionalCommentsDialect&amp;quot;/&amp;gt;
+    &amp;lt;/set&amp;gt;
+&amp;lt;property&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;it’s inside templateengine bean:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;bean id=&amp;quot;templateEngine&amp;quot; class=&amp;quot;org.thymeleaf.spring4.SpringTemplateEngine&amp;quot;&amp;gt;
+	&amp;lt;property name=&amp;quot;templateResolvers&amp;quot;&amp;gt;
+	  	&amp;lt;set&amp;gt;
+			&amp;lt;ref bean=&amp;quot;warTemplateResolver&amp;quot;/&amp;gt;
+			&amp;lt;ref bean=&amp;quot;cmsTemplateResolver&amp;quot;/&amp;gt;
+	  	&amp;lt;/set&amp;gt;
+	&amp;lt;/property&amp;gt;
+	&amp;lt;property name=&amp;quot;additionalDialects&amp;quot;&amp;gt;
+        &amp;lt;set&amp;gt;
+            &amp;lt;bean class=&amp;quot;org.thymeleaf.extras.conditionalcomments.dialect.ConditionalCommentsDialect&amp;quot;/&amp;gt;
+        &amp;lt;/set&amp;gt;
+    &amp;lt;/property&amp;gt;
+&amp;lt;/bean&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and then you should do this:&lt;/p&gt;
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;!--[if lt IE 9]&amp;gt;
+&amp;lt;script th:src=&amp;quot;${javascriptFolder} + '/datepicker/legacy.js'&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;![endif]--&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and Thymelaf processes expresion inside th:src attribute.&lt;/p&gt;
+
+&lt;h2 id=&quot;use-thymeleaf-comments-instead-of-html-and-javascript-ones&quot;&gt;Use Thymeleaf comments instead of HTML and JavaScript ones&lt;/h2&gt;
+
+&lt;p&gt;Thymeleaf comment won’t get processed to end users, so you save data transfer and also no one sees your TODO notes.&lt;/p&gt;
+
+&lt;p&gt;Thymeleaf comment in HTML code:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;!--/* 
+    Thymeleaf comment goes here
+*/--&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and comment in JavaScript code:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;/*[- */ 
+// JavaScript comment goes here
+/* -]*/&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;fix-of-problem-with-unchecked-checbox-when-using-thymeleaf-and-spring-web-flow&quot;&gt;Fix of problem with unchecked checbox when using Thymeleaf and Spring Web Flow&lt;/h2&gt;
+
+&lt;p&gt;If you use Spring Web Flow together with Thymeleaf and you have form which doesn’t use th:object and you have checkbox in that form and when you uncheck checbox nothing is send over.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;form th:action=&amp;quot;@{${flowExecutionUrl}(_eventId='change')}&amp;quot; th:method=&amp;quot;post&amp;quot;&amp;gt;
+
+	&amp;lt;input type=&amp;quot;checkbox&amp;quot; id=&amp;quot;fooBar&amp;quot; name=&amp;quot;fooBar&amp;quot; th:checked=&amp;quot;${fooBar}&amp;quot; th:value=&amp;quot;${mktGloballyAllowed}&amp;quot; /&amp;gt;
+	
+	&amp;lt;!-- rest of code ommited --&amp;gt;
+&amp;lt;/form&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You could fix this by adding hidden input with underscore prefix and th:value:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;form th:action=&amp;quot;@{${flowExecutionUrl}(_eventId='change')}&amp;quot; th:method=&amp;quot;post&amp;quot;&amp;gt;
+
+	&amp;lt;input type=&amp;quot;hidden&amp;quot; name=&amp;quot;_fooBar&amp;quot; th:value=&amp;quot;${fooBar}&amp;quot;/&amp;gt;
+	&amp;lt;input type=&amp;quot;checkbox&amp;quot; id=&amp;quot;fooBar&amp;quot; name=&amp;quot;fooBar&amp;quot; th:checked=&amp;quot;${fooBar}&amp;quot; /&amp;gt;
+	
+	&amp;lt;!-- rest of code ommited --&amp;gt;
+&amp;lt;/form&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;eclipse-ide-tips&quot;&gt;Eclipse IDE tips&lt;/h2&gt;
+
+&lt;h3 id=&quot;fix-eclipse-ide-html-problems-undefined-attribute-name-and-unknown-tag&quot;&gt;Fix Eclipse IDE HTML problems: Undefined attribute name and Unknown tag&lt;/h3&gt;
+
+&lt;p&gt;If you’re using Eclipse IDE, then under Markers View, you should have ugly list of HTML problems for example undefined attribute names:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Undefined attribute name th:href&lt;/li&gt;
+  &lt;li&gt;Undefined attribute name th:if &lt;/li&gt;
+  &lt;li&gt;Undefined attribute name th:include&lt;/li&gt;
+  &lt;li&gt;Undefined attribute name th:object &lt;/li&gt;
+  &lt;li&gt;Undefined attribute name th:text&lt;/li&gt;
+  &lt;li&gt;Undefined attribute name th:utext&lt;/li&gt;
+  &lt;li&gt;Undefined attribute name th:unless&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;and unknown tag:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Unknown tag th:block&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Solution is to surround your Thymeleaf code with:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;th:block xmlns:th=&amp;quot;http://www.thymeleaf.org&amp;quot;&amp;gt;
+	&amp;lt;div th:text=&amp;quot;${'Here we go Thymeleaf!'}&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;/th:block&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;use-thymeleaf-extras-plugin-for-eclipse-ide&quot;&gt;Use Thymeleaf extras plugin for Eclipse IDE&lt;/h3&gt;
+
+&lt;p&gt;If you would like to use feature like autocompletition it’s worth to check &lt;a href=&quot;https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin&quot;&gt;Thymeleaf extras Eclipse plugin&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>2015-09-21 21:15:00 +0200</pubDate>
+        <link>http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/</link>
+        <guid isPermaLink="true">http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/</guid>
+        
+        <category>thymeleaf</category>
+        
+        <category>java</category>
+        
+        
+        <category>thymeleaf</category>
+        
+      </item>
+    
+      <item>
+        <title>jQuery &amp; JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</title>
+        <description>&lt;p&gt;While using jQuery and JavaScript for developing web applications you could encounter some problems with Microsoft Internet Explorer 8 which doesn’t occur in other web browsers, or at least they don’t break your application like IE 8 does.&lt;/p&gt;
+
+&lt;p&gt;First of all lets tweak Internet Explorer to display notification about every script error, otherwise and error could occur and you wouldn’t even notice that.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2015-09-20-jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/ie9-javascript-error-settings.png&quot; alt=&quot;Internet Explorer 9: displaying notification about every script error&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;object-does-not-support-this-property-or-method-error&quot;&gt;‘Object does not support this property or method’ error&lt;/h2&gt;
+
+&lt;p&gt;This error happens if you call event.preventDefault();&lt;/p&gt;
+
+&lt;p&gt;Imagine you have link in your HTML code&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;html&quot;&gt;&amp;lt;a href=&amp;quot;#&amp;quot; id=&amp;quot;moreInfo&amp;quot;&amp;gt;Show&amp;lt;/a&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and you want to prevent default link behaviour after clicking on that link, so you use event.preventDefault(); which I’ve used on line 3 in code bellow:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;$(&amp;quot;#moreInfo&amp;quot;).click(function(event) {
+	showHideDiv('#moreInfo', false);
+	event.preventDefault();
+});&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;but in Internet Explorer 8 you get ‘Object does not support this property or method’ error.&lt;/p&gt;
+
+&lt;p&gt;You could fix it like this:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;if(event.preventDefault) { 
+	event.preventDefault();
+}
+else {
+	event.returnValue = false;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;or even more elegant one line version while using ternary operator, which I’ve prefer:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;event.preventDefault ? event.preventDefault() : event.returnValue = false;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;console-is-undefined-error&quot;&gt;‘console is undefined’ error&lt;/h2&gt;
+
+&lt;p&gt;This is very dangerous error because it completely breaks JavaScript/jQuery on the whole page and without that error notification settings turned on you won’t even notice that.&lt;/p&gt;
+
+&lt;p&gt;This error occurs when you want to use JavaScript logging and you don’t check if window.console is defined.&lt;/p&gt;
+
+&lt;p&gt;So if you have in your JavaScript code like this:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;console.log('Foo bar!');&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;you get an ‘console is undefined’ error.&lt;/p&gt;
+
+&lt;p&gt;You could fix this by adding following check:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;if(window.console){ console.log('Loren ipsum'); }&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And last note, if you use Developer Tools in Internet Explorer (shortcut F12) and error won’t happen so you might shake your head off while looking what’s broken in your code.&lt;/p&gt;
+
+&lt;h2 id=&quot;is-undefined-error&quot;&gt;‘is undefined’ error&lt;/h2&gt;
+
+&lt;p&gt;Lets imagine that you have two JavaScript files linked (it could be inlined JavaScript blocks also) to one HTML file. First is linked to Template/Theme and second one to content and in that second file you want to check if object is defined in that first file.&lt;/p&gt;
+
+&lt;p&gt;First block:&lt;/p&gt;
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&amp;lt;script type=&amp;quot;text/javascript&amp;quot;&amp;gt;
+window.ChatDef = window.ChatDef || {};
+ChatDef.user = ChatDef.user || {};
+ChatDef.user.firstName = 'John';
+&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Second block:&lt;/p&gt;
+&lt;div&gt;
+  &lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&amp;lt;script type=&amp;quot;text/javascript&amp;quot;&amp;gt;
+// Check if object ChatDef exists at code or file linked above this script
+if(!(typeof ChatDef === &amp;quot;undefined&amp;quot;)) {
+    // JavaScript operations with ChatDef goes here
+}
+&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So with check on line 3 in code above you won’t get ‘ChatDef is undefined’ error.&lt;/p&gt;
+</description>
+        <pubDate>2015-09-21 21:00:00 +0200</pubDate>
+        <link>http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/</link>
+        <guid isPermaLink="true">http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/</guid>
+        
+        <category>javascript</category>
+        
+        <category>jquery</category>
+        
+        <category>ie8</category>
+        
+        <category>internet-explorer</category>
+        
+        
+        <category>javascript</category>
+        
+      </item>
+    
+  </channel>
+</rss>
