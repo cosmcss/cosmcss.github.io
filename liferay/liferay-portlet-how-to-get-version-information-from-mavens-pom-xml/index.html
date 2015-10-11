@@ -1,0 +1,314 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1.0">
+	<link rel="icon" href="/favicon.ico?v=1.0">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css?v=1.0">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css?v=1.0">
+	<link rel="stylesheet" href="/css/blog.css?v=1.0">
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0">
+        <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js?v=1.0"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
+
+	<title>Liferay Portlet: How to get version information from Maven's POM.xml | LukasGrygar.com</title>
+
+	<meta name="author" content="Lukas Grygar">
+	<link rel="canonical" href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/">
+	<meta name="description" content="In case you developing Liferay 6.2 Portlet for 3rd party it&#8217;s useful to check if correct version of portlet is deployed in case you want to be sure if ...">
+	<meta name="keywords" content="liferay, liferay-portal" />
+
+	
+	<link rel="prev" title="Liferay Theme: How to put version information from Maven's POM.xml to header meta tag" href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/" />
+	
+    </head>
+    <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span> Home</a>
+
+	  
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <header class="blog-header">
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
+          <p class="lead blog-description">Personal enterprise Java web development blog.
+</p>
+      </header>
+
+      <div class="row">
+
+	<main class="col-sm-9 blog-main">
+		<article itemscope itemtype="http://schema.org/BlogPosting">
+
+	<header>
+	    <h1>Liferay Portlet: How to get version information from Maven's POM.xml</h1>
+		<p class="blog-post-meta">
+			<span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-10-11">October 11, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar
+		</p>
+	</header>
+
+    
+		<p>In case you developing Liferay 6.2 Portlet for 3rd party it’s useful to check if correct version of portlet is deployed in case you want to be sure if everything works correctly and correct version is deployed.</p>
+
+<p>Directory structure of Liferay 6.2 Portlet which is build by Apache Maven (note that I’m using Eclipse):</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">Foobar
+├── src/main/java
+<span class="p">|</span>    └── com.lukasgrygar.foobar
+<span class="p">|</span>        └── servlet
+<span class="p">|</span>            └── VersionServlet.java
+├── src/main/resources
+<span class="p">|</span>	└── version.properties
+├── src
+<span class="p">|</span>	└── main
+<span class="p">|</span>	    └── webapp
+<span class="p">|</span>	        └── web.xml
+└── pom.xml</code></pre></div>
+
+<p>pom.xml</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+
+	<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+	<span class="nt">&lt;version&gt;</span>1.0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+
+	<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+	<span class="nt">&lt;build&gt;</span>
+
+		<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+        <span class="nt">&lt;resources&gt;</span>
+
+			<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+	        <span class="nt">&lt;resource&gt;</span>
+	          <span class="nt">&lt;directory&gt;</span>src/main/resources<span class="nt">&lt;/directory&gt;</span>
+	          <span class="nt">&lt;filtering&gt;</span>true<span class="nt">&lt;/filtering&gt;</span>
+	        <span class="nt">&lt;/resource&gt;</span>
+
+			<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+        <span class="nt">&lt;/resources&gt;</span> 
+
+		<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+    <span class="nt">&lt;/build&gt;</span>
+
+    <span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+<span class="nt">&lt;/project&gt;</span></code></pre></div>
+
+<p>version.properties</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">foobar</span><span class="o">.</span><span class="na">version</span><span class="o">=</span><span class="n">$</span><span class="o">{</span><span class="n">project</span><span class="o">.</span><span class="na">version</span><span class="o">}</span></code></pre></div>
+
+<p>VersionServlet.java</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">lukas</span><span class="o">.</span><span class="na">grygar</span><span class="o">.</span><span class="na">foobar</span><span class="o">.</span><span class="na">servlet</span><span class="o">;</span>
+<span class="lineno"> 2</span> 
+<span class="lineno"> 3</span> <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="lineno"> 4</span> <span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+<span class="lineno"> 5</span> <span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+<span class="lineno"> 6</span> <span class="kn">import</span> <span class="nn">java.util.Properties</span><span class="o">;</span>
+<span class="lineno"> 7</span> 
+<span class="lineno"> 8</span> <span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
+<span class="lineno"> 9</span> <span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="lineno">10</span> <span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="lineno">11</span> <span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span> <span class="kn">import</span> <span class="nn">org.apache.log4j.Logger</span><span class="o">;</span>
+<span class="lineno">14</span> 
+<span class="lineno">15</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">VersionServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+<span class="lineno">16</span> 
+<span class="lineno">17</span>     <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">3666732306189421573L</span><span class="o">;</span>
+<span class="lineno">18</span> 
+<span class="lineno">19</span>     <span class="kd">private</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="n">log</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">VersionServlet</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="lineno">20</span> 
+<span class="lineno">21</span>     <span class="kd">private</span> <span class="n">Properties</span> <span class="n">prop</span><span class="o">;</span>
+<span class="lineno">22</span> 
+<span class="lineno">23</span>     <span class="kd">public</span> <span class="n">String</span> <span class="nf">getPortletVersion</span><span class="o">()</span> <span class="o">{</span>
+<span class="lineno">24</span>         <span class="k">return</span> <span class="n">prop</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&quot;foobar.version&quot;</span><span class="o">);</span>
+<span class="lineno">25</span>     <span class="o">}</span>
+<span class="lineno">26</span> 
+<span class="lineno">27</span>     <span class="nd">@Override</span>
+<span class="lineno">28</span>     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+<span class="lineno">29</span> 
+<span class="lineno">30</span>         <span class="n">prop</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Properties</span><span class="o">();</span>
+<span class="lineno">31</span>         <span class="n">InputStream</span> <span class="n">input</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="lineno">32</span> 
+<span class="lineno">33</span>         <span class="k">try</span> <span class="o">{</span>
+<span class="lineno">34</span>             <span class="n">String</span> <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;version.properties&quot;</span><span class="o">;</span>
+<span class="lineno">35</span>             <span class="n">input</span> <span class="o">=</span> <span class="n">VersionServlet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">().</span><span class="na">getResourceAsStream</span><span class="o">(</span><span class="n">filename</span><span class="o">);</span>
+<span class="lineno">36</span>             <span class="k">if</span> <span class="o">(</span><span class="n">input</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">37</span>                 <span class="k">if</span> <span class="o">(</span><span class="n">log</span><span class="o">.</span><span class="na">isDebugEnabled</span><span class="o">())</span> <span class="o">{</span>
+<span class="lineno">38</span>                     <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">&quot;init():: Sorry, unable to find &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="o">);</span>
+<span class="lineno">39</span>                 <span class="o">}</span>
+<span class="lineno">40</span>             <span class="o">}</span>
+<span class="lineno">41</span> 
+<span class="lineno">42</span>             <span class="c1">//load a properties file from class path, inside static method</span>
+<span class="lineno">43</span>             <span class="n">prop</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="n">input</span><span class="o">);</span>
+<span class="lineno">44</span> 
+<span class="lineno">45</span>         <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">46</span>             <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&quot;init():: Error during input load: &quot;</span> <span class="o">+</span> <span class="n">ex</span><span class="o">);</span>
+<span class="lineno">47</span> 
+<span class="lineno">48</span>         <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+<span class="lineno">49</span>             <span class="k">if</span> <span class="o">(</span><span class="n">input</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">50</span>                 <span class="k">try</span> <span class="o">{</span>
+<span class="lineno">51</span>                     <span class="n">input</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+<span class="lineno">52</span>                 <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<span class="lineno">53</span>                     <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&quot;init():: Error during input close: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">);</span>
+<span class="lineno">54</span>                 <span class="o">}</span>
+<span class="lineno">55</span>             <span class="o">}</span>
+<span class="lineno">56</span>         <span class="o">}</span>
+<span class="lineno">57</span>     <span class="o">}</span>
+<span class="lineno">58</span> 
+<span class="lineno">59</span>     <span class="nd">@Override</span>
+<span class="lineno">60</span>     <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="lineno">61</span> 
+<span class="lineno">62</span>         <span class="n">response</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">&quot;text/html;charset=UTF-8&quot;</span><span class="o">);</span>
+<span class="lineno">63</span>         <span class="n">PrintWriter</span> <span class="n">printWriter</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+<span class="lineno">64</span> 
+<span class="lineno">65</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;!DOCTYPE html&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">66</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;html&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">67</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;head&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">68</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;meta name=\&quot;robots\&quot; content=\&quot;noindex, nofollow\&quot;&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">69</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;title&gt;Version info&lt;/title&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">70</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;/head&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">71</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;body&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">72</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;p&gt;Foobar portlet version: &lt;strong&gt;&quot;</span> <span class="o">+</span> <span class="n">getPortletVersion</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;&lt;/strong&gt;&lt;/p&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">73</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;/body&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">74</span>         <span class="n">printWriter</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;/html&gt;&quot;</span><span class="o">);</span>
+<span class="lineno">75</span>     <span class="o">}</span>
+<span class="lineno">76</span> <span class="o">}</span></code></pre></div>
+
+<p>web.xml</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="lineno"> 1</span> <span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="lineno"> 2</span> <span class="nt">&lt;web-app</span> <span class="na">version=</span><span class="s">&quot;2.4&quot;</span> <span class="na">xmlns=</span><span class="s">&quot;http://java.sun.com/xml/ns/j2ee&quot;</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span> 	<span class="c">&lt;!-- rest of configuration ommited --&gt;</span>
+<span class="lineno"> 5</span> 
+<span class="lineno"> 6</span> 	<span class="nt">&lt;servlet&gt;</span>
+<span class="lineno"> 7</span> 	    <span class="nt">&lt;servlet-name&gt;</span>version<span class="nt">&lt;/servlet-name&gt;</span>
+<span class="lineno"> 8</span> 	    <span class="nt">&lt;servlet-class&gt;</span>com.lukas.grygar.foobar.servlet.VersionServlet<span class="nt">&lt;/servlet-class&gt;</span>
+<span class="lineno"> 9</span>   	<span class="nt">&lt;/servlet&gt;</span>
+<span class="lineno">10</span>   	
+<span class="lineno">11</span>   	<span class="nt">&lt;servlet-mapping&gt;</span>
+<span class="lineno">12</span> 	    <span class="nt">&lt;servlet-name&gt;</span>version<span class="nt">&lt;/servlet-name&gt;</span>
+<span class="lineno">13</span> 	    <span class="nt">&lt;url-pattern&gt;</span>/version<span class="nt">&lt;/url-pattern&gt;</span>
+<span class="lineno">14</span>   	<span class="nt">&lt;/servlet-mapping&gt;</span>
+<span class="lineno">15</span> 
+<span class="lineno">16</span>   	<span class="c">&lt;!-- rest of configuration ommited --&gt;</span>
+<span class="lineno">17</span> 
+<span class="lineno">18</span> <span class="nt">&lt;/web-app&gt;</span></code></pre></div>
+
+<p>Then version info is accessible through relative URL <strong>/Foobar-portlet/version</strong></p>
+
+	
+</article>
+
+<br />
+
+<p>Tags:
+
+	 <a href="http://lukasgrygar.com/tag/liferay" class="label label-default glyphicon glyphicon-tag"> liferay</a>&nbsp;
+
+	 <a href="http://lukasgrygar.com/tag/liferay-portal" class="label label-default glyphicon glyphicon-tag"> liferay-portal</a>&nbsp;
+
+</p>
+
+<hr />
+
+
+	<p>Previous post: <a href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/">Liferay Theme: How to put version information from Maven's POM.xml to header meta tag</a></p>
+
+	
+
+	
+<p>Related posts:</p>
+<ul>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/">Liferay Theme: How to put version information from Maven's POM.xml to header meta tag</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-localization-without-hook/">Liferay Theme localization without Hook</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/">Liferay: How to create expando (custom) attributes and roles programatically</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-6-2-on-apache-tomcat-7-how-to-fix-classnotfoundexception/">Liferay 6.2 on Apache Tomcat 7: How to fix ClassNotFoundException</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/">Spring Web Flow: Exception does not get logged while using 'transition on-exception'</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/">Liferay: How to encrypt (hash) password</a></li>
+	
+		<li><a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></li>
+	
+		<li><a href="http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/">jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</a></li>
+	
+</ul>
+
+	</main> 
+
+        <aside class="col-sm-2 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Personal enterprise Java web development blog.
+</p>
+          </div>
+
+	 
+
+        </aside> 
+
+      </div> 
+
+    </div> 
+
+    <footer class="blog-footer">
+      <p>
+	
+        <a href="#"><span class="glyphicon glyphicon-chevron-up"></span> Back to top</a>
+      </p>
+    </footer>
+
+     
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.11.2.min.js?v=1.0"><\/script>')</script>
+
+        <script src="/js/vendor/bootstrap.min.js?v=1.0"></script>
+        <script src="/js/main.js?v=1.0"></script>
+
+
+	
+        
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-68694005-1','auto');ga('send','pageview');
+        </script>
+	
+
+    </body>
+</html>

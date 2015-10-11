@@ -1,0 +1,206 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1.0">
+	<link rel="icon" href="/favicon.ico?v=1.0">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css?v=1.0">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css?v=1.0">
+	<link rel="stylesheet" href="/css/blog.css?v=1.0">
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0">
+        <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js?v=1.0"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
+
+	<title>Liferay Theme localization without Hook | LukasGrygar.com</title>
+
+	<meta name="author" content="Lukas Grygar">
+	<link rel="canonical" href="http://lukasgrygar.com/liferay/liferay-theme-localization-without-hook/">
+	<meta name="description" content="Easy tutorial to localize Liferay 6.2 Theme (which is build by Apache Maven) without using Liferay Hook.">
+	<meta name="keywords" content="liferay, liferay-portal" />
+
+	
+	<link rel="prev" title="Liferay: How to create expando (custom) attributes and roles programatically" href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/" />
+	<link rel="next" title="Liferay Theme: How to put version information from Maven's POM.xml to header meta tag" href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/" />
+    </head>
+    <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span> Home</a>
+
+	  
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <header class="blog-header">
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
+          <p class="lead blog-description">Personal enterprise Java web development blog.
+</p>
+      </header>
+
+      <div class="row">
+
+	<main class="col-sm-9 blog-main">
+		<article itemscope itemtype="http://schema.org/BlogPosting">
+
+	<header>
+	    <h1>Liferay Theme localization without Hook</h1>
+		<p class="blog-post-meta">
+			<span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-10-11">October 11, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar
+		</p>
+	</header>
+
+    
+		<p>Easy tutorial to localize Liferay 6.2 Theme (which is build by Apache Maven) without using Liferay Hook.</p>
+
+<p>The reason why I prefer having language files inside the theme project is simple: you have just one project with Liferay Theme instead of two projects Liferay Theme and Liferay Hook, which is convenient because if you’re developing theme for 3rd party and it’s part of big project then someone may forget to deploy Theme and Hook together on server and that’s why having two separate projects is prone to error.</p>
+
+<p>The key is <strong>convention over configuration</strong> so if you have Liferay 6.2 Theme project which build by Maven the directory structure is following:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">fooBar-theme
+├── src/main/main/resources
+<span class="p">|</span>   └── content
+<span class="p">|</span>       ├── Language_cs.properties
+<span class="p">|</span>       └── Language_en.properties
+└── src
+    └── main
+    	└── webapp
+    	    └── templates
+    	         └── init_custom.vm</code></pre></div>
+
+<p>First of all create two or more language files on you desired languages, mine are Czech and English:</p>
+
+<p>Language_cs.properties</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">custom</span><span class="o">-</span><span class="n">theme</span><span class="o">-</span><span class="n">langtext</span><span class="o">-</span><span class="n">search</span><span class="o">=</span><span class="n">Hledat</span></code></pre></div>
+
+<p>Language_en.properties</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">custom</span><span class="o">-</span><span class="n">theme</span><span class="o">-</span><span class="n">langtext</span><span class="o">-</span><span class="n">search</span><span class="o">=</span><span class="n">Search</span></code></pre></div>
+
+<p>And then you can retrieve langtext and assign him to variable:</p>
+
+<p>init_custom.vm</p>
+
+<div class="highlight"><pre><code class="language-velocity" data-lang="velocity"><span class="cp">#</span><span class="nf">set</span><span class="p"> ($</span><span class="nv">custom_theme_langtext_search</span> <span class="o">=</span> <span class="p">$</span><span class="nv">languageUtil</span><span class="p">.</span><span class="nv">get</span><span class="p">($</span><span class="nv">locale</span><span class="p">,</span> <span class="s2">&quot;custom-theme-langtext-search&quot;</span><span class="p">))</span><span class="x"></span></code></pre></div>
+
+<p>And don’t forget to include init_custom.vm to init.vm:</p>
+
+<p>init.vm</p>
+
+<div class="highlight"><pre><code class="language-velocity" data-lang="velocity"><span class="cp">##</span><span class="c"> ---------- Custom init ---------- ##</span><span class="x"></span>
+
+<span class="cp">#</span><span class="nf">parse</span><span class="p"> (</span><span class="s2">&quot;$full_templates_path/init_custom.vm&quot;</span><span class="p">)</span><span class="x"></span></code></pre></div>
+
+<p>And then you finally use you langtext in portal_normal.vm</p>
+
+<p>portal_normal.vm</p>
+
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;q&quot;</span> <span class="na">id=</span><span class="s">&quot;q&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;$custom_theme_langtext_search&quot;</span><span class="nt">&gt;</span></code></pre></div>
+
+<p>Tested on Liferay 6.2 CE GA2.</p>
+
+	
+</article>
+
+<br />
+
+<p>Tags:
+
+	 <a href="http://lukasgrygar.com/tag/liferay" class="label label-default glyphicon glyphicon-tag"> liferay</a>&nbsp;
+
+	 <a href="http://lukasgrygar.com/tag/liferay-portal" class="label label-default glyphicon glyphicon-tag"> liferay-portal</a>&nbsp;
+
+</p>
+
+<hr />
+
+
+	<p>Previous post: <a href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/">Liferay: How to create expando (custom) attributes and roles programatically</a></p>
+
+	
+
+	<p>Next post: <a href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/">Liferay Theme: How to put version information from Maven's POM.xml to header meta tag</a></p>
+
+	
+<p>Related posts:</p>
+<ul>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/">Liferay Portlet: How to get version information from Maven's POM.xml</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/">Liferay Theme: How to put version information from Maven's POM.xml to header meta tag</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/">Liferay: How to create expando (custom) attributes and roles programatically</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-6-2-on-apache-tomcat-7-how-to-fix-classnotfoundexception/">Liferay 6.2 on Apache Tomcat 7: How to fix ClassNotFoundException</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/">Spring Web Flow: Exception does not get logged while using 'transition on-exception'</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/">Liferay: How to encrypt (hash) password</a></li>
+	
+		<li><a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></li>
+	
+		<li><a href="http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/">jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</a></li>
+	
+</ul>
+
+	</main> 
+
+        <aside class="col-sm-2 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Personal enterprise Java web development blog.
+</p>
+          </div>
+
+	 
+
+        </aside> 
+
+      </div> 
+
+    </div> 
+
+    <footer class="blog-footer">
+      <p>
+	
+        <a href="#"><span class="glyphicon glyphicon-chevron-up"></span> Back to top</a>
+      </p>
+    </footer>
+
+     
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.11.2.min.js?v=1.0"><\/script>')</script>
+
+        <script src="/js/vendor/bootstrap.min.js?v=1.0"></script>
+        <script src="/js/main.js?v=1.0"></script>
+
+
+	
+        
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-68694005-1','auto');ga('send','pageview');
+        </script>
+	
+
+    </body>
+</html>

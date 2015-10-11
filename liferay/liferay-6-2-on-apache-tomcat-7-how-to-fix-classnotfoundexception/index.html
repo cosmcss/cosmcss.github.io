@@ -1,0 +1,184 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1.0">
+	<link rel="icon" href="/favicon.ico?v=1.0">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css?v=1.0">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css?v=1.0">
+	<link rel="stylesheet" href="/css/blog.css?v=1.0">
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0">
+        <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js?v=1.0"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
+
+	<title>Liferay 6.2 on Apache Tomcat 7: How to fix ClassNotFoundException | LukasGrygar.com</title>
+
+	<meta name="author" content="Lukas Grygar">
+	<link rel="canonical" href="http://lukasgrygar.com/liferay/liferay-6-2-on-apache-tomcat-7-how-to-fix-classnotfoundexception/">
+	<meta name="description" content="If you&#8217;re getting ClassNotFoundException while deploying Liferay portlet (mine is named Foobar) and you think your code is all right, maybe you should ...">
+	<meta name="keywords" content="liferay, liferay-portal" />
+
+	
+	<link rel="prev" title="Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution" href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/" />
+	<link rel="next" title="Liferay: How to create expando (custom) attributes and roles programatically" href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/" />
+    </head>
+    <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span> Home</a>
+
+	  
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <header class="blog-header">
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
+          <p class="lead blog-description">Personal enterprise Java web development blog.
+</p>
+      </header>
+
+      <div class="row">
+
+	<main class="col-sm-9 blog-main">
+		<article itemscope itemtype="http://schema.org/BlogPosting">
+
+	<header>
+	    <h1>Liferay 6.2 on Apache Tomcat 7: How to fix ClassNotFoundException</h1>
+		<p class="blog-post-meta">
+			<span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-10-11">October 11, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar
+		</p>
+	</header>
+
+    
+		<p>If you’re getting ClassNotFoundException while deploying Liferay portlet (mine is named Foobar) and you think your code is all right, maybe you should try to delete directories listed bellow.</p>
+
+<p>I assume that you performed <strong>mvn clean install</strong> (in case you build with Apache Maven), so all classes are availabile (this applies in case if you have some classes generated through JAXB etc.).</p>
+
+<p>But first of all remove portlet and stop server, bellow are steps to perform using Eclipse IDE:</p>
+
+<ul>
+  <li>In Eclipse Liferay’s perspective in tab Servers right click on portlet name and then click on remove.</li>
+  <li>Then stop server.</li>
+</ul>
+
+<p>After that use some commander and delete contents of directories listed bellow.</p>
+
+<p>Delete whole content of directories temp and work:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">C:<span class="se">\d</span>ev<span class="se">\l</span>iferay-portal-6.2-ce-ga2<span class="se">\t</span>omcat-7.0.42<span class="se">\t</span>emp</code></pre></div>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">C:<span class="se">\d</span>ev<span class="se">\l</span>iferay-portal-6.2-ce-ga2<span class="se">\t</span>omcat-7.0.42<span class="se">\w</span>ork</code></pre></div>
+
+<p>Delete only folder Foobar-portlet in directory webapps (don’t delete whole content of directory webapps, otherwise you have to upload portal dependencies after that and that’s not desirable in our case):</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">C:<span class="se">\d</span>ev<span class="se">\l</span>iferay-portal-6.2-ce-ga2<span class="se">\t</span>omcat-7.0.42<span class="se">\w</span>ebapps<span class="se">\</span></code></pre></div>
+
+<p>You could also delete Foobar-portlet.xml from /conf/Catalinalocalhost</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">C:<span class="se">\d</span>ev<span class="se">\l</span>iferay-portal-6.2-ce-ga2<span class="se">\t</span>omcat-7.0.42<span class="se">\c</span>onf<span class="se">\C</span>atalina<span class="se">\l</span>ocalhost</code></pre></div>
+
+	
+</article>
+
+<br />
+
+<p>Tags:
+
+	 <a href="http://lukasgrygar.com/tag/liferay" class="label label-default glyphicon glyphicon-tag"> liferay</a>&nbsp;
+
+	 <a href="http://lukasgrygar.com/tag/liferay-portal" class="label label-default glyphicon glyphicon-tag"> liferay-portal</a>&nbsp;
+
+</p>
+
+<hr />
+
+
+	<p>Previous post: <a href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</a></p>
+
+	
+
+	<p>Next post: <a href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/">Liferay: How to create expando (custom) attributes and roles programatically</a></p>
+
+	
+<p>Related posts:</p>
+<ul>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/">Liferay Portlet: How to get version information from Maven's POM.xml</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/">Liferay Theme: How to put version information from Maven's POM.xml to header meta tag</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-localization-without-hook/">Liferay Theme localization without Hook</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/">Liferay: How to create expando (custom) attributes and roles programatically</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/">Spring Web Flow: Exception does not get logged while using 'transition on-exception'</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/">Liferay: How to encrypt (hash) password</a></li>
+	
+		<li><a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></li>
+	
+		<li><a href="http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/">jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</a></li>
+	
+</ul>
+
+	</main> 
+
+        <aside class="col-sm-2 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Personal enterprise Java web development blog.
+</p>
+          </div>
+
+	 
+
+        </aside> 
+
+      </div> 
+
+    </div> 
+
+    <footer class="blog-footer">
+      <p>
+	
+        <a href="#"><span class="glyphicon glyphicon-chevron-up"></span> Back to top</a>
+      </p>
+    </footer>
+
+     
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.11.2.min.js?v=1.0"><\/script>')</script>
+
+        <script src="/js/vendor/bootstrap.min.js?v=1.0"></script>
+        <script src="/js/main.js?v=1.0"></script>
+
+
+	
+        
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-68694005-1','auto');ga('send','pageview');
+        </script>
+	
+
+    </body>
+</html>

@@ -1,0 +1,227 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1.0">
+	<link rel="icon" href="/favicon.ico?v=1.0">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css?v=1.0">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css?v=1.0">
+	<link rel="stylesheet" href="/css/blog.css?v=1.0">
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0">
+        <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js?v=1.0"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
+
+	<title>Liferay Theme: How to put version information from Maven's POM.xml to header meta tag | LukasGrygar.com</title>
+
+	<meta name="author" content="Lukas Grygar">
+	<link rel="canonical" href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/">
+	<meta name="description" content="In case you developing Liferay 6.2 Theme for 3rd party it&#8217;s useful to check if correct version of theme is deployed in case you want to be sure if ever...">
+	<meta name="keywords" content="liferay, liferay-portal" />
+
+	
+	<link rel="prev" title="Liferay Theme localization without Hook" href="http://lukasgrygar.com/liferay/liferay-theme-localization-without-hook/" />
+	<link rel="next" title="Liferay Portlet: How to get version information from Maven's POM.xml" href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/" />
+    </head>
+    <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span> Home</a>
+
+	  
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <header class="blog-header">
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
+          <p class="lead blog-description">Personal enterprise Java web development blog.
+</p>
+      </header>
+
+      <div class="row">
+
+	<main class="col-sm-9 blog-main">
+		<article itemscope itemtype="http://schema.org/BlogPosting">
+
+	<header>
+	    <h1>Liferay Theme: How to put version information from Maven's POM.xml to header meta tag</h1>
+		<p class="blog-post-meta">
+			<span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-10-11">October 11, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar
+		</p>
+	</header>
+
+    
+		<p>In case you developing Liferay 6.2 Theme for 3rd party it’s useful to check if correct version of theme is deployed in case you want to be sure if everything works correctly and correct version is deployed.</p>
+
+<p>Directory structure of files mentioned in this tutorial is following:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">fooBar-theme
+├── src/main/resources
+<span class="p">|</span>   └── portal.properties
+├── src
+<span class="p">|</span>   └── main
+<span class="p">|</span>   	└── webapp
+<span class="p">|</span>   	    └── templates
+<span class="p">|</span>  	            └── portal_normal.vm
+└─ pom.xml</code></pre></div>
+
+<p>First create file portal.properties in src/main/resources and put property theme.version and assign value ${project.version} to it:</p>
+
+<p>portal.properties</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">theme</span><span class="o">.</span><span class="na">version</span><span class="o">=</span><span class="n">$</span><span class="o">{</span><span class="n">project</span><span class="o">.</span><span class="na">version</span><span class="o">}</span></code></pre></div>
+
+<p>Than put version tag to POM.xml and enable filtering for directory /src/main/resources (due to fact that file portal.properties resides here):</p>
+
+<p>pom.xml</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+
+	<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+	<span class="nt">&lt;version&gt;</span>1.0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+
+	<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+	<span class="nt">&lt;build&gt;</span>
+
+		<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+        <span class="nt">&lt;resources&gt;</span>
+
+			<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+	        <span class="nt">&lt;resource&gt;</span>
+	          <span class="nt">&lt;directory&gt;</span>src/main/resources<span class="nt">&lt;/directory&gt;</span>
+	          <span class="nt">&lt;filtering&gt;</span>true<span class="nt">&lt;/filtering&gt;</span>
+	        <span class="nt">&lt;/resource&gt;</span>
+
+			<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+        <span class="nt">&lt;/resources&gt;</span> 
+
+		<span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+    <span class="nt">&lt;/build&gt;</span>
+
+    <span class="c">&lt;!-- rest of POM ommited --&gt;</span>
+
+<span class="nt">&lt;/project&gt;</span></code></pre></div>
+
+<p>Finally put meta tag with name theme-version to portal_normal.vm and load content through propsUtil.get():</p>
+
+<p>portal_normal.vm</p>
+
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="lineno">1</span> <span class="nt">&lt;head&gt;</span>
+<span class="lineno">2</span> <span class="c">&lt;!-- rest of head ommited --&gt;</span>
+<span class="lineno">3</span> <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">&quot;theme-version&quot;</span> <span class="na">content=</span><span class="s">&quot;$propsUtil.get(&quot;</span><span class="na">theme</span><span class="err">.</span><span class="na">version</span><span class="err">&quot;)&quot;</span> <span class="nt">/&gt;</span>
+<span class="lineno">4</span> <span class="c">&lt;!-- rest of head ommited --&gt;</span>
+<span class="lineno">5</span> <span class="nt">&lt;/head&gt;</span></code></pre></div>
+
+<p>During build Maven injects that version and after theme deployment you should be able to read theme version specified at POM.xml in generated HTML code.</p>
+
+	
+</article>
+
+<br />
+
+<p>Tags:
+
+	 <a href="http://lukasgrygar.com/tag/liferay" class="label label-default glyphicon glyphicon-tag"> liferay</a>&nbsp;
+
+	 <a href="http://lukasgrygar.com/tag/liferay-portal" class="label label-default glyphicon glyphicon-tag"> liferay-portal</a>&nbsp;
+
+</p>
+
+<hr />
+
+
+	<p>Previous post: <a href="http://lukasgrygar.com/liferay/liferay-theme-localization-without-hook/">Liferay Theme localization without Hook</a></p>
+
+	
+
+	<p>Next post: <a href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/">Liferay Portlet: How to get version information from Maven's POM.xml</a></p>
+
+	
+<p>Related posts:</p>
+<ul>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/">Liferay Portlet: How to get version information from Maven's POM.xml</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-localization-without-hook/">Liferay Theme localization without Hook</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/">Liferay: How to create expando (custom) attributes and roles programatically</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-6-2-on-apache-tomcat-7-how-to-fix-classnotfoundexception/">Liferay 6.2 on Apache Tomcat 7: How to fix ClassNotFoundException</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/">Spring Web Flow: Exception does not get logged while using 'transition on-exception'</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/">Liferay: How to encrypt (hash) password</a></li>
+	
+		<li><a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></li>
+	
+		<li><a href="http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/">jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</a></li>
+	
+</ul>
+
+	</main> 
+
+        <aside class="col-sm-2 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Personal enterprise Java web development blog.
+</p>
+          </div>
+
+	 
+
+        </aside> 
+
+      </div> 
+
+    </div> 
+
+    <footer class="blog-footer">
+      <p>
+	
+        <a href="#"><span class="glyphicon glyphicon-chevron-up"></span> Back to top</a>
+      </p>
+    </footer>
+
+     
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.11.2.min.js?v=1.0"><\/script>')</script>
+
+        <script src="/js/vendor/bootstrap.min.js?v=1.0"></script>
+        <script src="/js/main.js?v=1.0"></script>
+
+
+	
+        
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-68694005-1','auto');ga('send','pageview');
+        </script>
+	
+
+    </body>
+</html>
