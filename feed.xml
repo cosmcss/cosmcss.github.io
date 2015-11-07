@@ -6,9 +6,54 @@
 </description>
     <link>http://lukasgrygar.com/</link>
     <atom:link href="http://lukasgrygar.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 11 Oct 2015 23:28:56 +0200</pubDate>
-    <lastBuildDate>Sun, 11 Oct 2015 23:28:56 +0200</lastBuildDate>
+    <pubDate>Sat, 07 Nov 2015 13:14:46 +0100</pubDate>
+    <lastBuildDate>Sat, 07 Nov 2015 13:14:46 +0100</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>How to uninstall (remove) Oracle Database 11g on Microsoft Windows 7</title>
+        <description>&lt;p&gt;Sometimes it might be useful to &lt;strong&gt;reinstall&lt;/strong&gt; or completly &lt;strong&gt;remove&lt;/strong&gt; &lt;strong&gt;Oracle Database 11g&lt;/strong&gt; from your system. In this tutorial I’ll show you how to do it on &lt;strong&gt;Microsoft Windows 7&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;We start with &lt;strong&gt;removing environment variable&lt;/strong&gt;.
+ Go to &lt;em&gt;Control Panel\System and Security\System&lt;/em&gt; and on the right side click on &lt;em&gt;Advanced system settings&lt;/em&gt; and on &lt;em&gt;Advanced&lt;/em&gt; tab click on &lt;em&gt;Environment Variables&lt;/em&gt;, then in &lt;em&gt;System variables&lt;/em&gt; doubleclick on &lt;em&gt;Path&lt;/em&gt; and in &lt;em&gt;Variable value&lt;/em&gt; find Oracle home path, it could be something like &lt;em&gt;C:\app\johndoe\product\11.2.0.4\dbhome_1\bin;&lt;/em&gt; and delete that Oracle home path.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Second step is to &lt;strong&gt;stop services and daemon processes&lt;/strong&gt;. &lt;/p&gt;
+
+    &lt;p&gt;You could do so with &lt;em&gt;Windows Registry Editor&lt;/em&gt; (you should start Windows Registry editor by pressing &lt;em&gt;Windows key + R&lt;/em&gt; and then typing &lt;em&gt;regedit&lt;/em&gt;).&lt;/p&gt;
+
+    &lt;p&gt;In this step good advice is to backup registry first, so click to &lt;em&gt;HKEY_LOCAL_MACHINE&lt;/em&gt; and then right-click on &lt;em&gt;SOFTWARE&lt;/em&gt; and select &lt;em&gt;Export&lt;/em&gt; and choose some &lt;em&gt;File name&lt;/em&gt; for example &lt;em&gt;backup-reg-hkey-local-machine-software.reg&lt;/em&gt; and &lt;em&gt;Save&lt;/em&gt; it.&lt;/p&gt;
+
+    &lt;p&gt;Then click through &lt;em&gt;HKEY_LOCAL_MACHINE&lt;/em&gt; -&amp;gt; &lt;em&gt;SOFTWARE&lt;/em&gt; -&amp;gt; and right-click on &lt;em&gt;ORACLE&lt;/em&gt; and click on &lt;em&gt;Delete&lt;/em&gt; and submit &lt;em&gt;Yes&lt;/em&gt; to permanently delete.&lt;/p&gt;
+
+    &lt;p&gt;Another backup, so click through &lt;em&gt;HKEY_LOCAL_MACHINE&lt;/em&gt; -&amp;gt; &lt;em&gt;SYSTEM&lt;/em&gt; -&amp;gt; right-click on &lt;em&gt;CurrentControlSet&lt;/em&gt; and select &lt;em&gt;Export&lt;/em&gt; and again choose some &lt;em&gt;File name&lt;/em&gt; like &lt;em&gt;backup-reg-hkey-local-machine-system-currentcontrol-set.reg&lt;/em&gt; and &lt;em&gt;Save&lt;/em&gt; it.&lt;/p&gt;
+
+    &lt;p&gt;Then click through &lt;em&gt;HKEY_LOCAL_MACHINE&lt;/em&gt; -&amp;gt; &lt;em&gt;SYSTEM&lt;/em&gt; -&amp;gt; &lt;em&gt;CurrentControlSet&lt;/em&gt; -&amp;gt; &lt;em&gt;services&lt;/em&gt; delete all registries which starts with &lt;em&gt;Oracle&lt;/em&gt; prefix (it’s Oracle11, OracleDBConsoleorcl, OracleJobSchedulerORCL , OracleMTSRecoveryService, OracleOraDb11g_home1ClrAgent, OracleOraDb11g_home1TNSListener, OracleServiceORCL and OracleVssWriterORCL), you could do that by right-clicking on each and then selecting delete as we did in previous step.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Now &lt;strong&gt;restart your system&lt;/strong&gt; which will stop all services related with Oracle as we already deleted them in registry.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;After system restart you need to &lt;strong&gt;delete Oracle DB files&lt;/strong&gt;, these files are in my case located at &lt;em&gt;C:\app\johndoe&lt;/em&gt; and delete folders here (it’s admin, cfgtoollogs, checkpoints, diag, flash_recovery_area, oradata and product). And we’re done with uninstalling Oracle DB 11g on Microsoft Windows 7.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Note: It’s tested on Microsoft Windows 7 but it could probably work on &lt;em&gt;Microsoft Windows 8&lt;/em&gt; without any difference as well.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 07 Nov 2015 13:00:00 +0100</pubDate>
+        <link>http://lukasgrygar.com/oracle-db/how-to-uninstall-oracle-database-11g-on-microsoft-windows-7/</link>
+        <guid isPermaLink="true">http://lukasgrygar.com/oracle-db/how-to-uninstall-oracle-database-11g-on-microsoft-windows-7/</guid>
+        
+        <category>oracle-db</category>
+        
+        <category>database</category>
+        
+        
+        <category>oracle-db</category>
+        
+      </item>
     
       <item>
         <title>Liferay Portlet: How to get version information from Maven's POM.xml</title>
@@ -1034,102 +1079,6 @@ You need PasswordEncryptorUtil.encrypt() method to do that, but for calling this
         
         
         <category>thymeleaf</category>
-        
-      </item>
-    
-      <item>
-        <title>jQuery &amp; JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</title>
-        <description>&lt;p&gt;While using jQuery and JavaScript for developing web applications you could encounter some problems with Microsoft Internet Explorer 8 which doesn’t occur in other web browsers, or at least they don’t break your application like IE 8 does.&lt;/p&gt;
-
-&lt;p&gt;First of all lets tweak Internet Explorer to display notification about every script error, otherwise and error could occur and you wouldn’t even notice that.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/2015-09-20-jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/ie9-javascript-error-settings.png&quot; alt=&quot;Internet Explorer 9: displaying notification about every script error&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;object-does-not-support-this-property-or-method-error&quot;&gt;‘Object does not support this property or method’ error&lt;/h2&gt;
-
-&lt;p&gt;This error happens if you call event.preventDefault();&lt;/p&gt;
-
-&lt;p&gt;Imagine you have link in your HTML code&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;#&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;moreInfo&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Show&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;and you want to prevent default link behaviour after clicking on that link, so you use event.preventDefault(); which I’ve used on line 3 in code bellow:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;#moreInfo&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;click&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; 	&lt;span class=&quot;nx&quot;&gt;showHideDiv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;#moreInfo&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; 	&lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;preventDefault&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;but in Internet Explorer 8 you get ‘Object does not support this property or method’ error.&lt;/p&gt;
-
-&lt;p&gt;You could fix it like this:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;preventDefault&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; 	&lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;preventDefault&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; 	&lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;returnValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;or even more elegant one line version while using ternary operator, which I’ve prefer:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;preventDefault&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;preventDefault&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;returnValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;console-is-undefined-error&quot;&gt;‘console is undefined’ error&lt;/h2&gt;
-
-&lt;p&gt;This is very dangerous error because it completely breaks JavaScript/jQuery on the whole page and without that error notification settings turned on you won’t even notice that.&lt;/p&gt;
-
-&lt;p&gt;This error occurs when you want to use JavaScript logging and you don’t check if window.console is defined.&lt;/p&gt;
-
-&lt;p&gt;So if you have in your JavaScript code like this:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Foo bar!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;you get an ‘console is undefined’ error.&lt;/p&gt;
-
-&lt;p&gt;You could fix this by adding following check:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Loren ipsum&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;And last note, if you use Developer Tools in Internet Explorer (shortcut F12) and error won’t happen so you might shake your head off while looking what’s broken in your code.&lt;/p&gt;
-
-&lt;h2 id=&quot;is-undefined-error&quot;&gt;‘is undefined’ error&lt;/h2&gt;
-
-&lt;p&gt;Lets imagine that you have two JavaScript files linked (it could be inlined JavaScript blocks also) to one HTML file. First is linked to Template/Theme and second one to content and in that second file you want to check if object is defined in that first file.&lt;/p&gt;
-
-&lt;p&gt;First block:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;text/javascript&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ChatDef&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ChatDef&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ChatDef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ChatDef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ChatDef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;firstName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;John&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;/script&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Second block:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;text/javascript&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Check if object ChatDef exists at code or file linked above this script&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ChatDef&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;undefined&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;// JavaScript operations with ChatDef goes here&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;/script&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;So with check on line 3 in code above you won’t get ‘ChatDef is undefined’ error.&lt;/p&gt;
-</description>
-        <pubDate>Mon, 21 Sep 2015 21:00:00 +0200</pubDate>
-        <link>http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/</link>
-        <guid isPermaLink="true">http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/</guid>
-        
-        <category>javascript</category>
-        
-        <category>jquery</category>
-        
-        <category>ie8</category>
-        
-        <category>internet-explorer</category>
-        
-        
-        <category>javascript</category>
         
       </item>
     

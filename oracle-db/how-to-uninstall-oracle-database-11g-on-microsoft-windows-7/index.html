@@ -1,0 +1,193 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1.0">
+	<link rel="icon" href="/favicon.ico?v=1.0">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css?v=1.0">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css?v=1.0">
+	<link rel="stylesheet" href="/css/blog.css?v=1.0">
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0">
+        <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js?v=1.0"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
+
+	<title>How to uninstall (remove) Oracle Database 11g on Microsoft Windows 7 | LukasGrygar.com</title>
+
+	<meta name="author" content="Lukas Grygar">
+	<link rel="canonical" href="http://lukasgrygar.com/oracle-db/how-to-uninstall-oracle-database-11g-on-microsoft-windows-7/">
+	<meta name="description" content="Sometimes it might be useful to reinstall or completly remove Oracle Database 11g from your system. In this tutorial I&#8217;ll show you how to do it on Micr...">
+	<meta name="keywords" content="oracle-db, database" />
+
+	
+	<link rel="prev" title="Liferay Portlet: How to get version information from Maven's POM.xml" href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/" />
+	
+    </head>
+    <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span> Home</a>
+
+	  
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <header class="blog-header">
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
+          <p class="lead blog-description">Personal enterprise Java web development blog.
+</p>
+      </header>
+
+      <div class="row">
+
+	<main class="col-sm-9 blog-main">
+		<article itemscope itemtype="http://schema.org/BlogPosting">
+
+	<header>
+	    <h1>How to uninstall (remove) Oracle Database 11g on Microsoft Windows 7</h1>
+		<p class="blog-post-meta">
+			<span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2015-11-07">November 7, 2015</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar
+		</p>
+	</header>
+
+    
+		<p>Sometimes it might be useful to <strong>reinstall</strong> or completly <strong>remove</strong> <strong>Oracle Database 11g</strong> from your system. In this tutorial I’ll show you how to do it on <strong>Microsoft Windows 7</strong>.</p>
+
+<ol>
+  <li>
+    <p>We start with <strong>removing environment variable</strong>.
+ Go to <em>Control Panel\System and Security\System</em> and on the right side click on <em>Advanced system settings</em> and on <em>Advanced</em> tab click on <em>Environment Variables</em>, then in <em>System variables</em> doubleclick on <em>Path</em> and in <em>Variable value</em> find Oracle home path, it could be something like <em>C:\app\johndoe\product\11.2.0.4\dbhome_1\bin;</em> and delete that Oracle home path.</p>
+  </li>
+  <li>
+    <p>Second step is to <strong>stop services and daemon processes</strong>. </p>
+
+    <p>You could do so with <em>Windows Registry Editor</em> (you should start Windows Registry editor by pressing <em>Windows key + R</em> and then typing <em>regedit</em>).</p>
+
+    <p>In this step good advice is to backup registry first, so click to <em>HKEY_LOCAL_MACHINE</em> and then right-click on <em>SOFTWARE</em> and select <em>Export</em> and choose some <em>File name</em> for example <em>backup-reg-hkey-local-machine-software.reg</em> and <em>Save</em> it.</p>
+
+    <p>Then click through <em>HKEY_LOCAL_MACHINE</em> -&gt; <em>SOFTWARE</em> -&gt; and right-click on <em>ORACLE</em> and click on <em>Delete</em> and submit <em>Yes</em> to permanently delete.</p>
+
+    <p>Another backup, so click through <em>HKEY_LOCAL_MACHINE</em> -&gt; <em>SYSTEM</em> -&gt; right-click on <em>CurrentControlSet</em> and select <em>Export</em> and again choose some <em>File name</em> like <em>backup-reg-hkey-local-machine-system-currentcontrol-set.reg</em> and <em>Save</em> it.</p>
+
+    <p>Then click through <em>HKEY_LOCAL_MACHINE</em> -&gt; <em>SYSTEM</em> -&gt; <em>CurrentControlSet</em> -&gt; <em>services</em> delete all registries which starts with <em>Oracle</em> prefix (it’s Oracle11, OracleDBConsoleorcl, OracleJobSchedulerORCL , OracleMTSRecoveryService, OracleOraDb11g_home1ClrAgent, OracleOraDb11g_home1TNSListener, OracleServiceORCL and OracleVssWriterORCL), you could do that by right-clicking on each and then selecting delete as we did in previous step.</p>
+  </li>
+  <li>
+    <p>Now <strong>restart your system</strong> which will stop all services related with Oracle as we already deleted them in registry.</p>
+  </li>
+  <li>
+    <p>After system restart you need to <strong>delete Oracle DB files</strong>, these files are in my case located at <em>C:\app\johndoe</em> and delete folders here (it’s admin, cfgtoollogs, checkpoints, diag, flash_recovery_area, oradata and product). And we’re done with uninstalling Oracle DB 11g on Microsoft Windows 7.</p>
+  </li>
+</ol>
+
+<p>Note: It’s tested on Microsoft Windows 7 but it could probably work on <em>Microsoft Windows 8</em> without any difference as well.</p>
+
+	
+</article>
+
+<br />
+
+<p>Tags:
+
+	 <a href="http://lukasgrygar.com/tag/oracle-db" class="label label-default glyphicon glyphicon-tag"> oracle-db</a>&nbsp;
+
+	 <a href="http://lukasgrygar.com/tag/database" class="label label-default glyphicon glyphicon-tag"> database</a>&nbsp;
+
+</p>
+
+<p>Share on:
+	<a href="https://twitter.com/share?url=http://lukasgrygar.com/oracle-db/how-to-uninstall-oracle-database-11g-on-microsoft-windows-7/&text=How%20to%20uninstall%20(remove)%20Oracle%20Database%2011g%20on%20Microsoft%20Windows%207&via=LukasGrygar" class="label label-info glyphicon glyphicon-share"> Twitter</a>&nbsp;
+	<a href="https://www.facebook.com/sharer/sharer.php?u=http://lukasgrygar.com/oracle-db/how-to-uninstall-oracle-database-11g-on-microsoft-windows-7/" class="label label-primary glyphicon glyphicon-share"> Facebook</a>&nbsp;
+	<a href="https://plus.google.com/share?url=http://lukasgrygar.com/oracle-db/how-to-uninstall-oracle-database-11g-on-microsoft-windows-7/" class="label label-danger glyphicon glyphicon-share"> Google&#43;</a>&nbsp;
+</p>
+
+<hr />
+
+
+	<p>Previous post: <a href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/">Liferay Portlet: How to get version information from Maven's POM.xml</a></p>
+
+	
+
+	
+<p>Related posts:</p>
+<ul>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/">Liferay Portlet: How to get version information from Maven's POM.xml</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/">Liferay Theme: How to put version information from Maven's POM.xml to header meta tag</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-localization-without-hook/">Liferay Theme localization without Hook</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/">Liferay: How to create expando (custom) attributes and roles programatically</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-6-2-on-apache-tomcat-7-how-to-fix-classnotfoundexception/">Liferay 6.2 on Apache Tomcat 7: How to fix ClassNotFoundException</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/">Spring Web Flow: Exception does not get logged while using 'transition on-exception'</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/">Liferay: How to encrypt (hash) password</a></li>
+	
+		<li><a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></li>
+	
+		<li><a href="http://lukasgrygar.com/javascript/jquery-and-javascript-in-internet-explorer-8-object-does-not-support-this-property-or-method-and-console-is-undefined-solution/">jQuery & JavaScript in Internet Explorer 8: 'Object does not support this property or method' and 'console' is undefined [solution]</a></li>
+	
+</ul>
+
+	</main> 
+
+        <aside class="col-sm-2 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Personal enterprise Java web development blog.
+</p>
+          </div>
+
+	 
+
+        </aside> 
+
+      </div> 
+
+    </div> 
+
+    <footer class="blog-footer">
+      <p>
+	
+        <a href="#"><span class="glyphicon glyphicon-chevron-up"></span> Back to top</a>
+      </p>
+    </footer>
+
+     
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.11.2.min.js?v=1.0"><\/script>')</script>
+
+        <script src="/js/vendor/bootstrap.min.js?v=1.0"></script>
+        <script src="/js/main.js?v=1.0"></script>
+
+
+	
+        
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-68694005-1','auto');ga('send','pageview');
+        </script>
+	
+
+    </body>
+</html>
