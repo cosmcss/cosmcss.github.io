@@ -1,0 +1,207 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1.0">
+	<link rel="icon" href="/favicon.ico?v=1.0">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css?v=1.0">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css?v=1.0">
+	<link rel="stylesheet" href="/css/blog.css?v=1.0">
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0">
+        <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js?v=1.0"></script>
+
+	<link rel="alternate" type="application/rss+xml" title="LukasGrygar.com" href="http://lukasgrygar.com/feed.xml" />
+
+	<title>Spring Web Flow: passing values between flows | LukasGrygar.com</title>
+
+	<meta name="author" content="Lukas Grygar">
+	<link rel="canonical" href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-passing-values-between-flows/">
+	<meta name="description" content="Let&#8217;s imagine the situation that you have main flow and three subflows in that main flow and you want pass values between some of these flows and not t...">
+	<meta name="keywords" content="java, spring, spring-web-flow, spring-webflow" />
+
+	
+	<link rel="prev" title="How to uninstall (remove) Oracle Database 11g on Microsoft Windows 7" href="http://lukasgrygar.com/oracle-db/how-to-uninstall-oracle-database-11g-on-microsoft-windows-7/" />
+	
+    </head>
+    <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="http://lukasgrygar.com"><span class="glyphicon glyphicon-home"></span> Home</a>
+
+	  
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <header class="blog-header">
+          <span class="blog-title"><a href="http://lukasgrygar.com">Lukas Grygar's</a></span>
+          <p class="lead blog-description">Personal enterprise Java web development blog.
+</p>
+      </header>
+
+      <div class="row">
+
+	<main class="col-sm-9 blog-main">
+		<article itemscope itemtype="http://schema.org/BlogPosting">
+
+	<header>
+	    <h1>Spring Web Flow: passing values between flows</h1>
+		<p class="blog-post-meta">
+			<span class=" glyphicon glyphicon-calendar"></span> <time itemprop="dateCreated" datetime="2016-01-24">January 24, 2016</time> by <span class="glyphicon glyphicon-user"></span> Lukas Grygar
+		</p>
+	</header>
+
+    
+		<p>Let’s imagine the situation that you have main flow and three subflows in that main flow and you want pass values between some of these flows and not to use conversation scope for that.</p>
+
+<p>Scenario is following: I start at <em>main flow</em> and then go to <em>subflow A</em> and get some variable value which I pass back to <em>main flow</em> and then from <em>main flow</em> I go to <em>subflow B</em> and use that variable value (which I setted at <em>subflow A</em>) here. </p>
+
+<p>You may wonder why not to use conversation scope, but due to fact that I don’t need to use that variable at subflow C so there is no need for conversation scope.</p>
+
+<p>In a <em>subflow A</em> I define output parameter <em>isBar</em> and assign a value from flow scope with same name (<em>isBar</em>). Flow scope variable <em>isBar</em> is valid through whole <em>subflow A</em>.</p>
+
+<p><strong>subflow-a-flow.xml</strong></p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;end-state</span> <span class="na">id=</span><span class="s">&quot;someEndstateName&quot;</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;output</span> <span class="na">type=</span><span class="s">&quot;java.lang.Boolean&quot;</span> <span class="na">name=</span><span class="s">&quot;isBar&quot;</span> <span class="na">value=</span><span class="s">&quot;flowScope.isBar&quot;</span> <span class="nt">/&gt;</span> 
+<span class="nt">&lt;/end-state&gt;</span></code></pre></div>
+
+<p>And then in <em>main flow</em> I retrieve variable <em>isBar</em> and set it to flow scope variable <em>isFoo</em> which is valid through whole <em>main flow</em>.</p>
+
+<p><strong>main-flow.xml</strong></p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;subflow-state</span> <span class="na">id=</span><span class="s">&quot;subflowA&quot;</span> <span class="na">subflow=</span><span class="s">&quot;subflow-a-flow&quot;</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;transition</span> <span class="na">on=</span><span class="s">&quot;someEndstateName&quot;</span> <span class="na">to=</span><span class="s">&quot;somewhere&quot;</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;set</span> <span class="na">type=</span><span class="s">&quot;java.lang.Boolean&quot;</span> <span class="na">name=</span><span class="s">&quot;flowScope.isFoo&quot;</span> <span class="na">value=</span><span class="s">&quot;currentEvent.attributes.isBar&quot;</span> <span class="nt">/&gt;</span>
+	<span class="nt">&lt;/transition&gt;</span>
+<span class="nt">&lt;/subflow-state&gt;</span></code></pre></div>
+
+<p>And then again at <em>main flow</em> I set this variable as an input parameter for <em>subflow B</em>.</p>
+
+<p><strong>main-flow.xml</strong></p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;subflow-state</span> <span class="na">id=</span><span class="s">&quot;subflowB&quot;</span> <span class="na">subflow=</span><span class="s">&quot;subflow-b-flow&quot;</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;java.lang.Boolean&quot;</span> <span class="na">name=</span><span class="s">&quot;isQux&quot;</span> <span class="na">value=</span><span class="s">&quot;flowScope.isFoo&quot;</span> <span class="na">required=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/subflow-state&gt;</span></code></pre></div>
+
+<p>And finally retrive this parameter at subflow B.</p>
+
+<p><strong>subflow-b-flow.xml</strong></p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">&quot;isQux&quot;</span> <span class="na">type=</span><span class="s">&quot;java.lang.Boolean&quot;</span> <span class="na">required=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+
+<p>One last note, in examples above I was using Spring Web Flow version 2.3.3.RELEASE.</p>
+
+	
+</article>
+
+<br />
+
+<p>Tags:
+
+	 <a href="http://lukasgrygar.com/tag/java" class="label label-default glyphicon glyphicon-tag"> java</a>&nbsp;
+
+	 <a href="http://lukasgrygar.com/tag/spring" class="label label-default glyphicon glyphicon-tag"> spring</a>&nbsp;
+
+	 <a href="http://lukasgrygar.com/tag/spring-web-flow" class="label label-default glyphicon glyphicon-tag"> spring-web-flow</a>&nbsp;
+
+	 <a href="http://lukasgrygar.com/tag/spring-webflow" class="label label-default glyphicon glyphicon-tag"> spring-webflow</a>&nbsp;
+
+</p>
+
+<p>Share on:
+	<a href="https://twitter.com/share?url=http://lukasgrygar.com/spring-web-flow/spring-web-flow-passing-values-between-flows/&text=Spring%20Web%20Flow%3A%20passing%20values%20between%20flows&via=LukasGrygar" class="label label-info glyphicon glyphicon-share"> Twitter</a>&nbsp;
+	<a href="https://www.facebook.com/sharer/sharer.php?u=http://lukasgrygar.com/spring-web-flow/spring-web-flow-passing-values-between-flows/" class="label label-primary glyphicon glyphicon-share"> Facebook</a>&nbsp;
+	<a href="https://plus.google.com/share?url=http://lukasgrygar.com/spring-web-flow/spring-web-flow-passing-values-between-flows/" class="label label-danger glyphicon glyphicon-share"> Google&#43;</a>&nbsp;
+</p>
+
+<hr />
+
+
+	<p>Previous post: <a href="http://lukasgrygar.com/oracle-db/how-to-uninstall-oracle-database-11g-on-microsoft-windows-7/">How to uninstall (remove) Oracle Database 11g on Microsoft Windows 7</a></p>
+
+	
+
+	
+<p>Related posts:</p>
+<ul>
+	
+		<li><a href="http://lukasgrygar.com/oracle-db/how-to-uninstall-oracle-database-11g-on-microsoft-windows-7/">How to uninstall (remove) Oracle Database 11g on Microsoft Windows 7</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-portlet-how-to-get-version-information-from-mavens-pom-xml/">Liferay Portlet: How to get version information from Maven's POM.xml</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-how-to-put-version-information-from-mavens-pom-xml-to-header-meta-tag/">Liferay Theme: How to put version information from Maven's POM.xml to header meta tag</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-theme-localization-without-hook/">Liferay Theme localization without Hook</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-create-expando-custom-attributes-and-roles-programatically/">Liferay: How to create expando (custom) attributes and roles programatically</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-6-2-on-apache-tomcat-7-how-to-fix-classnotfoundexception/">Liferay 6.2 on Apache Tomcat 7: How to fix ClassNotFoundException</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-framework/spring-rest-param-gets-truncated-and-http-406-error-solution/">Spring REST service: GET path variable gets truncated after dot '.' and HTTP Error 406 'Not acceptable' solution</a></li>
+	
+		<li><a href="http://lukasgrygar.com/spring-web-flow/spring-web-flow-exception-does-not-get-logged-while-using-transition-on-exception/">Spring Web Flow: Exception does not get logged while using 'transition on-exception'</a></li>
+	
+		<li><a href="http://lukasgrygar.com/liferay/liferay-how-to-encrypt-hash-password/">Liferay: How to encrypt (hash) password</a></li>
+	
+		<li><a href="http://lukasgrygar.com/thymeleaf/thymeleaf-tips-and-tricks/">Thymeleaf: Tips and Tricks</a></li>
+	
+</ul>
+
+	</main> 
+
+        <aside class="col-sm-2 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Personal enterprise Java web development blog.
+</p>
+          </div>
+
+	 
+
+        </aside> 
+
+      </div> 
+
+    </div> 
+
+    <footer class="blog-footer">
+      <p>
+	
+        <a href="#"><span class="glyphicon glyphicon-chevron-up"></span> Back to top</a>
+      </p>
+    </footer>
+
+     
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.11.2.min.js?v=1.0"><\/script>')</script>
+
+        <script src="/js/vendor/bootstrap.min.js?v=1.0"></script>
+        <script src="/js/main.js?v=1.0"></script>
+
+
+	
+        
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-68694005-1','auto');ga('send','pageview');
+        </script>
+	
+
+    </body>
+</html>
